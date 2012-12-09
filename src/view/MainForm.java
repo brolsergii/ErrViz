@@ -10,8 +10,15 @@
  */
 package view;
 
+import controller.CTM;
+import controller.STM;
 import java.awt.Color;
+import java.io.File;
+import javax.swing.JFileChooser;
 import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
+import javax.swing.text.StyledDocument;
+import model.Sector;
+import model.Word;
 
 /**
  *
@@ -34,6 +41,8 @@ public class MainForm extends javax.swing.JFrame {
     private void initComponents() {
 
         jComboBox1 = new javax.swing.JComboBox();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextPane2 = new javax.swing.JTextPane();
         jSplitPane1 = new javax.swing.JSplitPane();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -43,11 +52,11 @@ public class MainForm extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jEditorPane1 = new javax.swing.JEditorPane();
+        jTextPane1 = new javax.swing.JTextPane();
         jPanel6 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jTextPane3 = new javax.swing.JTextPane();
         jPanel4 = new javax.swing.JPanel();
         jSplitPane4 = new javax.swing.JSplitPane();
         jPanel7 = new javax.swing.JPanel();
@@ -67,18 +76,31 @@ public class MainForm extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
+        jCheckBoxMenuItem2 = new javax.swing.JCheckBoxMenuItem();
+        jCheckBoxMenuItem3 = new javax.swing.JCheckBoxMenuItem();
+        jMenu4 = new javax.swing.JMenu();
+        jMenuItem4 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new java.awt.GridLayout());
+        jScrollPane2.setViewportView(jTextPane2);
 
-        jSplitPane1.setDividerLocation(300);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new java.awt.GridLayout(1, 0));
+
+        jSplitPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jSplitPane1.setDividerSize(2);
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        jSplitPane1.setLastDividerLocation(101);
+        jSplitPane1.setResizeWeight(0.5);
+        jSplitPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jSplitPane1.setMinimumSize(new java.awt.Dimension(116, 100));
         jSplitPane1.setPreferredSize(new java.awt.Dimension(640, 480));
 
+        jPanel1.setMaximumSize(new java.awt.Dimension(32767, 100));
         jPanel1.setPreferredSize(new java.awt.Dimension(629, 100));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -89,25 +111,34 @@ public class MainForm extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 133, Short.MAX_VALUE)
+            .addGap(0, 218, Short.MAX_VALUE)
         );
 
         jSplitPane1.setBottomComponent(jPanel1);
 
         jPanel2.setPreferredSize(new java.awt.Dimension(629, 100));
-        jPanel2.setLayout(new java.awt.GridLayout());
+        jPanel2.setLayout(new java.awt.GridLayout(1, 0));
 
         jSplitPane2.setDividerLocation(400);
+        jSplitPane2.setDividerSize(2);
+        jSplitPane2.setResizeWeight(0.5);
 
-        jPanel3.setLayout(new java.awt.GridLayout());
+        jPanel3.setLayout(new java.awt.GridLayout(1, 0));
 
         jSplitPane3.setDividerLocation(150);
+        jSplitPane3.setDividerSize(2);
         jSplitPane3.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jSplitPane3.setResizeWeight(0.5);
 
         jLabel1.setText("STM");
 
-        jEditorPane1.setText("<H1>test</H1>");
-        jScrollPane1.setViewportView(jEditorPane1);
+        jTextPane1.setEditable(false);
+        jTextPane1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTextPane1MouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jTextPane1);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -116,7 +147,7 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addComponent(jLabel1)
                 .addContainerGap(377, Short.MAX_VALUE))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -132,9 +163,12 @@ public class MainForm extends javax.swing.JFrame {
 
         jLabel2.setText("CTM");
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane2.setViewportView(jTextArea2);
+        jTextPane3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTextPane3MouseClicked(evt);
+            }
+        });
+        jScrollPane5.setViewportView(jTextPane3);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -143,14 +177,14 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addComponent(jLabel2)
                 .addContainerGap(376, Short.MAX_VALUE))
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE))
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE))
         );
 
         jLabel2.getAccessibleContext().setAccessibleName("CTMLabel");
@@ -161,10 +195,12 @@ public class MainForm extends javax.swing.JFrame {
 
         jSplitPane2.setLeftComponent(jPanel3);
 
-        jPanel4.setLayout(new java.awt.GridLayout());
+        jPanel4.setLayout(new java.awt.GridLayout(1, 0));
 
         jSplitPane4.setDividerLocation(100);
+        jSplitPane4.setDividerSize(2);
         jSplitPane4.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jSplitPane4.setResizeWeight(0.5);
 
         jLabel3.setText("Extra Information");
 
@@ -178,8 +214,8 @@ public class MainForm extends javax.swing.JFrame {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addComponent(jLabel3)
-                .addContainerGap(136, Short.MAX_VALUE))
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
+                .addContainerGap(139, Short.MAX_VALUE))
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -191,10 +227,12 @@ public class MainForm extends javax.swing.JFrame {
 
         jSplitPane4.setTopComponent(jPanel7);
 
-        jPanel8.setLayout(new java.awt.GridLayout());
+        jPanel8.setLayout(new java.awt.GridLayout(1, 0));
 
         jSplitPane5.setDividerLocation(100);
+        jSplitPane5.setDividerSize(2);
         jSplitPane5.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jSplitPane5.setResizeWeight(0.5);
 
         jLabel4.setText("Speakers");
 
@@ -212,8 +250,8 @@ public class MainForm extends javax.swing.JFrame {
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addComponent(jLabel4)
-                .addContainerGap(175, Short.MAX_VALUE))
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+                .addContainerGap(178, Short.MAX_VALUE))
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -246,7 +284,7 @@ public class MainForm extends javax.swing.JFrame {
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jComboBox2, 0, 219, Short.MAX_VALUE)
+            .addComponent(jComboBox2, 0, 222, Short.MAX_VALUE)
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton1)
@@ -254,7 +292,7 @@ public class MainForm extends javax.swing.JFrame {
                 .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -265,7 +303,7 @@ public class MainForm extends javax.swing.JFrame {
                     .addComponent(jButton1)
                     .addComponent(jButton2)
                     .addComponent(jButton3))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jButton1.getAccessibleContext().setAccessibleName("buttonPrev");
@@ -289,6 +327,44 @@ public class MainForm extends javax.swing.JFrame {
         getContentPane().add(jSplitPane1);
 
         jMenu1.setText("File");
+
+        jMenuItem1.setText("New");
+        jMenu1.add(jMenuItem1);
+
+        jMenu3.setText("Load");
+
+        jCheckBoxMenuItem1.setText("STM");
+        jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jCheckBoxMenuItem1);
+
+        jCheckBoxMenuItem2.setText("CTM");
+        jCheckBoxMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jCheckBoxMenuItem2);
+
+        jCheckBoxMenuItem3.setText("WAV");
+        jMenu3.add(jCheckBoxMenuItem3);
+
+        jMenu1.add(jMenu3);
+
+        jMenu4.setText("Search");
+        jMenu1.add(jMenu4);
+
+        jMenuItem4.setText("Exit");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem4);
+
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Edit");
@@ -301,12 +377,36 @@ public class MainForm extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO: Search for all errors
-        try 
-        {
-            jEditorPane1.getHighlighter().addHighlight(4, 8, new DefaultHighlightPainter(Color.red));
+        try {
+            jTextPane1.getHighlighter().addHighlight(4, 8, new DefaultHighlightPainter(Color.red));
+        } catch (Exception e) {
         }
-        catch(Exception e){}
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jTextPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextPane1MouseClicked
+        // TODO possibly of the several program states here
+        //highlightSelectedSTMWord();
+        highlightSelectedSTMSegment();
+    }//GEN-LAST:event_jTextPane1MouseClicked
+
+    private void jTextPane3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextPane3MouseClicked
+        // TODO possibly of the several program states here
+        highlightSelectedCTMWord();
+    }//GEN-LAST:event_jTextPane3MouseClicked
+
+    private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
+        loadSTM();
+        updateLoadCheckBoxes();
+    }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
+
+    private void jCheckBoxMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem2ActionPerformed
+        loadCTM();
+        updateLoadCheckBoxes();
+    }//GEN-LAST:event_jCheckBoxMenuItem2ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        exit();
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -323,9 +423,11 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem2;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem3;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBox2;
-    private javax.swing.JEditorPane jEditorPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -333,7 +435,11 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JList jList1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
@@ -348,12 +454,167 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JSplitPane jSplitPane3;
     private javax.swing.JSplitPane jSplitPane4;
     private javax.swing.JSplitPane jSplitPane5;
-    private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextArea jTextArea3;
+    private javax.swing.JTextPane jTextPane1;
+    private javax.swing.JTextPane jTextPane2;
+    private javax.swing.JTextPane jTextPane3;
     // End of variables declaration//GEN-END:variables
+
+    public void exit() {
+        boolean res = OutputHelper.askQuestion("Are you sure you want to quit?", "Exit");
+        if (res) {
+            System.exit(0);
+        }
+    }
+
+    public void updateSTM() {
+        // TODO: use segments as well
+        StyledDocument doc = jTextPane1.getStyledDocument();
+
+        int currentPosition = 0;
+        try {
+            for (Sector sect : controller.STM.getInstance().getSectors()) {
+                for (Word word : sect.getSentence()) {
+                    word.setPosition(currentPosition);
+                    doc.insertString(doc.getLength(), word.getWord() + " ", null);
+                    currentPosition += word.getLength() + 1; // a space between words
+                }
+                doc.insertString(doc.getLength(), "\n", null);
+                currentPosition++;
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+    }
+
+    public void updateCTM() {
+        // TODO: use segments as well
+        StyledDocument doc = jTextPane3.getStyledDocument();
+
+        int currentPosition = 0;
+        try {
+            for (Word word : CTM.getInstance().getWords()) {
+                word.setPosition(currentPosition);
+                doc.insertString(doc.getLength(), word.getWord() + " ", null);
+                currentPosition += word.getLength() + 1; // a space between words
+            }
+            doc.insertString(doc.getLength(), "\n", null);
+            currentPosition++;
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+    }
+
+    /**
+     * Highlight the selected word on the STM textpane and output the extra information about it
+     */
+    public void highlightSelectedSTMWord() {
+        int pos = jTextPane1.getCaretPosition();
+        Word selected = controller.STM.getInstance().getWordByPossition(pos);
+        if (selected != null) {
+            try {
+                jTextPane1.getHighlighter().removeAllHighlights();
+                jTextPane1.getHighlighter().
+                        addHighlight(selected.getPosition(), selected.getPosition() + selected.getLength(), new DefaultHighlightPainter(Color.red));
+                String extraInfo = "";
+                extraInfo += "ID: " + selected.getID() + "\n";
+                extraInfo += "Word: " + selected.getWord() + "\n";
+                extraInfo += "Position: " + selected.getPosition() + "\n";
+                extraInfo += "Length: " + selected.getLength() + "\n";
+                jTextArea3.setText(extraInfo); // ExtraInfo textArea
+            } catch (Exception e) {
+                System.err.println(e);
+            }
+        }
+    }
+
+    /**
+     * Highlight the selected word on the STM textpane and output the extra information about it
+     */
+    public void highlightSelectedSTMSegment() {
+        int pos = jTextPane1.getCaretPosition();
+        Sector selected = controller.STM.getInstance().getSectorByPossition(pos);
+        if (selected != null) {
+            try {
+                jTextPane1.getHighlighter().removeAllHighlights();
+                jTextPane1.getHighlighter().
+                        addHighlight(selected.getPosition(), selected.getPosition() + selected.getLengthInChars(), new DefaultHighlightPainter(Color.red));
+                String extraInfo = "";
+                extraInfo += "ID: " + selected.getID() + "\n";
+                extraInfo += "Position: " + selected.getPosition() + "\n";
+                extraInfo += "Length: " + selected.getLength() + " words \n";
+                extraInfo += "Length in chars : " + selected.getLengthInChars() + " characters \n";
+                jTextArea3.setText(extraInfo); // ExtraInfo textArea
+            } catch (Exception e) {
+                System.err.println(e);
+            }
+        }
+    }
+
+    /**
+     * Highlight the selected word on the CTM textpane and output the extra information about it
+     */
+    public void highlightSelectedCTMWord() {
+        int pos = jTextPane3.getCaretPosition();
+        Word selected = controller.CTM.getInstance().getWordByPossition(pos);
+        if (selected != null) {
+            try {
+                jTextPane3.getHighlighter().removeAllHighlights();
+                jTextPane3.getHighlighter().
+                        addHighlight(selected.getPosition(), selected.getPosition() + selected.getLength(), new DefaultHighlightPainter(Color.red));
+                String extraInfo = "";
+                extraInfo += "ID: " + selected.getID() + "\n";
+                extraInfo += "Word: " + selected.getWord() + "\n";
+                extraInfo += "Position: " + selected.getPosition() + "\n";
+                extraInfo += "Length: " + selected.getLength() + "\n";
+                jTextArea3.setText(extraInfo); // ExtraInfo textArea
+            } catch (Exception e) {
+                System.err.println(e);
+            }
+        }
+    }
+
+    public void updateLoadCheckBoxes() {
+        jCheckBoxMenuItem1.setState(false);
+        jCheckBoxMenuItem2.setState(false);
+        jCheckBoxMenuItem3.setState(false);
+        if (STM.getInstance().isLoaded()) {
+            jCheckBoxMenuItem1.setState(true);
+        }
+        if (CTM.getInstance().isLoaded()) {
+            jCheckBoxMenuItem2.setState(true);
+        }
+
+        // TODO: Check for WAV controller as well
+    }
+
+    public void loadCTM() {
+        // TODO : Load CTM Here
+        final JFileChooser fc = new JFileChooser();
+        int returnVal = fc.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            //OutputHelper.showErrorMessage(file.getPath(), "fileName");
+            CTM.getInstance().load(file.getPath());
+            updateCTM();
+        }
+    }
+
+    public void loadSTM() {
+        // TODO : Load STM Here
+        final JFileChooser fc = new JFileChooser();
+        int returnVal = fc.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            //OutputHelper.showErrorMessage(file.getPath(), "fileName");
+            STM.getInstance().load(file.getPath());
+            updateSTM();
+        }
+    }
 }
