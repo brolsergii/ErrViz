@@ -2,7 +2,7 @@ package model;
 
 /**
  *
- * @author axel
+ * @author axel and Babacar
  */
 public class Speaker {
     private String id;

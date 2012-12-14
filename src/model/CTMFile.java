@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 
 /**
- * @author axel
+ * @author axel and Babacar
  */
 public class CTMFile {
     

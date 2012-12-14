@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package modele;
+package model;
 
 import java.io.IOException;
 import java.util.logging.Level;

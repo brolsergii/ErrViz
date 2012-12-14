@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package modele;
+package model;
 
 import com.musicg.graphic.GraphicRender;
 import com.musicg.wave.Wave;
