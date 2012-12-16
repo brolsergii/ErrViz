@@ -224,7 +224,7 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
                                       <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace pref="377" max="32767" attributes="0"/>
+                                      <EmptySpace pref="332" max="32767" attributes="0"/>
                                   </Group>
                                   <Component id="jScrollPane1" alignment="0" pref="397" max="32767" attributes="0"/>
                               </Group>
@@ -242,7 +242,7 @@
                           <SubComponents>
                             <Component class="javax.swing.JLabel" name="jLabel1">
                               <Properties>
-                                <Property name="text" type="java.lang.String" value="STM"/>
+                                <Property name="text" type="java.lang.String" value="STM and CTM"/>
                               </Properties>
                               <AccessibilityProperties>
                                 <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="STMLabel"/>
@@ -279,7 +279,7 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
                                       <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace pref="376" max="32767" attributes="0"/>
+                                      <EmptySpace pref="368" max="32767" attributes="0"/>
                                   </Group>
                                   <Component id="jScrollPane5" alignment="1" pref="397" max="32767" attributes="0"/>
                               </Group>
@@ -297,7 +297,7 @@
                           <SubComponents>
                             <Component class="javax.swing.JLabel" name="jLabel2">
                               <Properties>
-                                <Property name="text" type="java.lang.String" value="CTM"/>
+                                <Property name="text" type="java.lang.String" value="Errors"/>
                               </Properties>
                               <AccessibilityProperties>
                                 <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="CTMLabel"/>

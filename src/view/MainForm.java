@@ -14,7 +14,9 @@ import controller.CTM;
 import controller.STM;
 import java.awt.Color;
 import java.io.File;
+import javax.sound.midi.ControllerEventListener;
 import javax.swing.JFileChooser;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 import javax.swing.text.StyledDocument;
 import model.Sector;
@@ -130,7 +132,7 @@ public class MainForm extends javax.swing.JFrame {
         jSplitPane3.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         jSplitPane3.setResizeWeight(0.5);
 
-        jLabel1.setText("STM");
+        jLabel1.setText("STM and CTM");
 
         jTextPane1.setEditable(false);
         jTextPane1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -146,7 +148,7 @@ public class MainForm extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addComponent(jLabel1)
-                .addContainerGap(377, Short.MAX_VALUE))
+                .addContainerGap(332, Short.MAX_VALUE))
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
@@ -161,7 +163,7 @@ public class MainForm extends javax.swing.JFrame {
 
         jSplitPane3.setTopComponent(jPanel5);
 
-        jLabel2.setText("CTM");
+        jLabel2.setText("Errors");
 
         jTextPane3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -176,7 +178,7 @@ public class MainForm extends javax.swing.JFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addComponent(jLabel2)
-                .addContainerGap(376, Short.MAX_VALUE))
+                .addContainerGap(368, Short.MAX_VALUE))
             .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
         );
         jPanel6Layout.setVerticalGroup(
@@ -386,12 +388,14 @@ public class MainForm extends javax.swing.JFrame {
     private void jTextPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextPane1MouseClicked
         // TODO possibly of the several program states here
         //highlightSelectedSTMWord();
+        clearHighlighting();
         highlightSelectedSTMSegment();
+        highlightSelectedCTMWord();
     }//GEN-LAST:event_jTextPane1MouseClicked
 
     private void jTextPane3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextPane3MouseClicked
         // TODO possibly of the several program states here
-        highlightSelectedCTMWord();
+        //highlightSelectedCTMWord();
     }//GEN-LAST:event_jTextPane3MouseClicked
 
     private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
@@ -473,8 +477,8 @@ public class MainForm extends javax.swing.JFrame {
         }
     }
 
-    public void updateSTM() {
-        // TODO: use segments as well
+    @Deprecated
+    public void _updateSTM() {
         StyledDocument doc = jTextPane1.getStyledDocument();
 
         int currentPosition = 0;
@@ -493,33 +497,81 @@ public class MainForm extends javax.swing.JFrame {
         }
     }
 
-    public void updateCTM() {
-        // TODO: use segments as well
-        StyledDocument doc = jTextPane3.getStyledDocument();
-
-        int currentPosition = 0;
+    public void updateSTMCTM() {
+        StyledDocument doc = jTextPane1.getStyledDocument();
         try {
-            for (Word word : CTM.getInstance().getWords()) {
-                word.setPosition(currentPosition);
-                doc.insertString(doc.getLength(), word.getWord() + " ", null);
-                currentPosition += word.getLength() + 1; // a space between words
-            }
-            doc.insertString(doc.getLength(), "\n", null);
-            currentPosition++;
-        } catch (Exception e) {
+            doc.remove(0, doc.getLength());
+        } catch (BadLocationException e) {
             System.err.println(e);
+        }
+        if (STM.getInstance().isLoaded() && CTM.getInstance().isLoaded()) {
+            int currentPosition = 0; // indexation of the characters in the text
+            try {
+                for (int index = 0; index < controller.STM.getInstance().getSectors().size(); index++) {
+                    //for (Sector sect1 : controller.STM.getInstance().getSectors()) {
+                    Sector sect1 = controller.STM.getInstance().getSectors().get(index);
+                    Sector sect2 = controller.CTM.getInstance().getSectors().get(index);
+                    String tmpStr = "" + index + "\n";
+                    doc.insertString(doc.getLength(), tmpStr, null);
+                    currentPosition += tmpStr.length();
+                    for (Word word : sect1.getSentence()) {
+                        word.setPosition(currentPosition);
+                        doc.insertString(doc.getLength(), word.getWord() + " ", null);
+                        currentPosition += word.getLength() + 1; // a space between words
+                    }
+                    doc.insertString(doc.getLength(), "\n", null);
+                    currentPosition++;
+                    for (Word word : sect2.getSentence()) {
+                        word.setPosition(currentPosition);
+                        doc.insertString(doc.getLength(), word.getWord() + " ", null);
+                        currentPosition += word.getLength() + 1; // a space between words
+                    }
+                    doc.insertString(doc.getLength(), "\n", null);
+                    currentPosition = doc.getLength();
+                }
+            } catch (Exception e) {
+                System.err.println(e);
+            }
+        } else {
+            if (CTM.getInstance().isLoaded()) {
+                int currentPosition = 0;
+                try {
+                    for (Word word : CTM.getInstance().getWords()) {
+                        word.setPosition(currentPosition);
+                        doc.insertString(doc.getLength(), word.getWord() + " ", null);
+                        currentPosition += word.getLength() + 1; // a space between words
+                    }
+                    doc.insertString(doc.getLength(), "\n", null);
+                    currentPosition++;
+                } catch (Exception e) {
+                    System.err.println(e);
+                }
+            }
+            if (STM.getInstance().isLoaded()) {
+                int currentPosition = 0;
+                try {
+                    for (Sector sect : controller.STM.getInstance().getSectors()) {
+                        for (Word word : sect.getSentence()) {
+                            word.setPosition(currentPosition);
+                            doc.insertString(doc.getLength(), word.getWord() + " ", null);
+                            currentPosition += word.getLength() + 1; // a space between words
+                        }
+                        doc.insertString(doc.getLength(), "\n", null);
+                        currentPosition++;
+                    }
+                } catch (Exception e) {
+                    System.err.println(e);
+                }
+            }
         }
     }
 
-    /**
-     * Highlight the selected word on the STM textpane and output the extra information about it
-     */
+    @Deprecated
     public void highlightSelectedSTMWord() {
         int pos = jTextPane1.getCaretPosition();
         Word selected = controller.STM.getInstance().getWordByPossition(pos);
         if (selected != null) {
             try {
-                jTextPane1.getHighlighter().removeAllHighlights();
                 jTextPane1.getHighlighter().
                         addHighlight(selected.getPosition(), selected.getPosition() + selected.getLength(), new DefaultHighlightPainter(Color.red));
                 String extraInfo = "";
@@ -534,6 +586,10 @@ public class MainForm extends javax.swing.JFrame {
         }
     }
 
+    public void clearHighlighting() {
+        jTextPane1.getHighlighter().removeAllHighlights();
+    }
+    
     /**
      * Highlight the selected word on the STM textpane and output the extra information about it
      */
@@ -542,7 +598,6 @@ public class MainForm extends javax.swing.JFrame {
         Sector selected = controller.STM.getInstance().getSectorByPossition(pos);
         if (selected != null) {
             try {
-                jTextPane1.getHighlighter().removeAllHighlights();
                 jTextPane1.getHighlighter().
                         addHighlight(selected.getPosition(), selected.getPosition() + selected.getLengthInChars(), new DefaultHighlightPainter(Color.red));
                 String extraInfo = "";
@@ -561,12 +616,11 @@ public class MainForm extends javax.swing.JFrame {
      * Highlight the selected word on the CTM textpane and output the extra information about it
      */
     public void highlightSelectedCTMWord() {
-        int pos = jTextPane3.getCaretPosition();
+        int pos = jTextPane1.getCaretPosition();
         Word selected = controller.CTM.getInstance().getWordByPossition(pos);
         if (selected != null) {
             try {
-                jTextPane3.getHighlighter().removeAllHighlights();
-                jTextPane3.getHighlighter().
+                jTextPane1.getHighlighter().
                         addHighlight(selected.getPosition(), selected.getPosition() + selected.getLength(), new DefaultHighlightPainter(Color.red));
                 String extraInfo = "";
                 extraInfo += "ID: " + selected.getID() + "\n";
@@ -594,6 +648,12 @@ public class MainForm extends javax.swing.JFrame {
         // TODO: Check for WAV controller as well
     }
 
+    public void checkForCTMandSTM() {
+        if (STM.getInstance().isLoaded() && CTM.getInstance().isLoaded()) {
+            CTM.getInstance().doSegmentation();
+        }
+    }
+
     public void loadCTM() {
         // TODO : Load CTM Here
         final JFileChooser fc = new JFileChooser();
@@ -602,7 +662,8 @@ public class MainForm extends javax.swing.JFrame {
             File file = fc.getSelectedFile();
             //OutputHelper.showErrorMessage(file.getPath(), "fileName");
             CTM.getInstance().load(file.getPath());
-            updateCTM();
+            checkForCTMandSTM();
+            updateSTMCTM();
         }
     }
 
@@ -614,7 +675,8 @@ public class MainForm extends javax.swing.JFrame {
             File file = fc.getSelectedFile();
             //OutputHelper.showErrorMessage(file.getPath(), "fileName");
             STM.getInstance().load(file.getPath());
-            updateSTM();
+            checkForCTMandSTM();
+            updateSTMCTM();
         }
     }
 }

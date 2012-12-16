@@ -51,17 +51,27 @@ public class STM {
         }
         return null;
     }
-    
+
     public Sector getSectorByPossition(int pos) {
-        for (Sector s : getSectors()) {
+        int currentPos = 0;
+        boolean lower = true;
+        for (int i = 0; i < getSectors().size(); i++) {
+            Sector s = getSectors().get(i);
+            //for (Sector s : getSectors()) {
             for (Word w : s.getSentence()) {
                 if (w.getPosition() <= pos && w.getPosition() + w.getLength() >= pos) {
                     return s;
                 }
+                currentPos = w.getPosition();
+                if (currentPos > pos && lower && i > 0)
+                    return getSectors().get(i-1);
             }
         }
         return null;
     }
-    
+
+    public STMFile getSTMFile() {
+        return stmFile;
+    }
     private STMFile stmFile;
 }

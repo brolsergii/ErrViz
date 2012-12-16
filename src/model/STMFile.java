@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 /**
  *
- * @author axel and Babacar
+ * @author axel
  */
 public class STMFile {
     
