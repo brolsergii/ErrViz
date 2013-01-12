@@ -1,8 +1,5 @@
 package errviz;
 
-import controller.STM;
-import model.Sector;
-import model.Word;
 import view.MainForm;
 
 public class ErrViz {

@@ -1,6 +1,5 @@
 package model;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -25,15 +24,20 @@ public class CTMFile {
             float begin = seg1.getBegin();
             float end = seg1.getEnd();
             String CTMSentence = "";
+            ArrayList<Word> words = new ArrayList<Word>();
             for (Word wrd : aWordArray)
             {
                 float timeWrd = (wrd.getBegin() + wrd.getEnd())/2;
-                if ( timeWrd > begin && timeWrd < end )
+                if ( timeWrd > begin && timeWrd < end ){
                     CTMSentence += wrd.getWord() + " ";
+                    words.add(wrd);
+                }
             }
             CTMSentence = CTMSentence.trim();
-            Sector seg2 = new Sector(CTMSentence, begin, end, seg1.getaSpeaker(),
+            Sector seg2 = new Sector(words, begin, end, seg1.getaSpeaker(),
                    seg1.getConditions(), seg1.getSentence().get(0).getIndex());
+            //Sector seg2 = new Sector(CTMSentence, begin, end, seg1.getaSpeaker(),
+            //       seg1.getConditions(), seg1.getSentence().get(0).getIndex());
             aSectorArray.add(seg2);
         }
     }
