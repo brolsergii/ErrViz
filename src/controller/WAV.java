@@ -45,6 +45,7 @@ public class WAV {
         player = new WavePlayer(file);
         overralTimeInSec = player.getFileDuration();
         //overralTimeInSec = 1000;
+        wavFile = new WAVFile(file);
       }
 
       public WavePlayer getPlayer() {
