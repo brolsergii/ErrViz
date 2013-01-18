@@ -2,6 +2,7 @@ package controller;
 
 import java.util.ArrayList;
 import model.Word;
+import model.Sector;
 import model.CTMFile;
 import parserCTM.ParserCTM;
 
@@ -40,10 +41,28 @@ public class CTM {
         return ctmFile.getaWordArray();
     }
 
+    public ArrayList<Sector> getSectors() {
+        return ctmFile.getSectorArray();
+    }
+
+    public void doSegmentation() {
+        ctmFile.doSegmentation(STM.getInstance().getSTMFile());
+    }
+
     public Word getWordByPossition(int pos) {
-        for (Word w : ctmFile.getaWordArray()) {
-            if (w.getPosition() <= pos && w.getPosition() + w.getLength() >= pos) {
-                return w;
+        if (ctmFile != null) {
+            for (Sector sec : ctmFile.getSectorArray()) {
+                for (Word w : sec.getSentence()) {
+                    if (w.getPosition() <= pos && w.getPosition() + w.getLength() >= pos) {
+                        return w;
+                    }
+                }
+            }
+        } else {
+            for (Word w : ctmFile.getaWordArray()) {
+                if (w.getPosition() <= pos && w.getPosition() + w.getLength() >= pos) {
+                    return w;
+                }
             }
         }
         return null;

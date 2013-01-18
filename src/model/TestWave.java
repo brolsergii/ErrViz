@@ -15,6 +15,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  * @author anasdridi
  */
 public class TestWave {
+  /*
     public static void main(String []args)
     {
         try {
@@ -30,5 +31,5 @@ public class TestWave {
         }
        
     }
-    
+   */ 
 }

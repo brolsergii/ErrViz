@@ -5,118 +5,129 @@ import java.util.Iterator;
 
 public class Sector {
 
-    private ArrayList<Word> sentence;
-    //private String sentence;
-    private float begin;
-    private float end;
-    private Speaker aSpeaker;
-    private String conditions;
-    private int ID;
+  private ArrayList<Word> sentence;
+  //private String sentence;
+  private float begin;
+  private float end;
+  private Speaker aSpeaker;
+  private String conditions;
+  private int ID;
 
-    public Sector(String s, float f1, float f2, Speaker spk, String cond, int offset) {
-        //public Sector(float f1, float f2, Speaker spk, String cond ){
-        sentence = new ArrayList<Word>();
-        String[] arrayTmp = s.split(" ");
-        for (int i = 0; i < arrayTmp.length; i++) {
-            sentence.add(new Word(arrayTmp[i], i + offset));
-        }
-        //sentence = s;
-        begin = f1;
-        end = f2;
-        aSpeaker = spk;
-        conditions = cond;
-        this.ID = getUID();
+  public Sector(String s, float f1, float f2, Speaker spk, String cond, int offset) {
+    //public Sector(float f1, float f2, Speaker spk, String cond ){
+    sentence = new ArrayList<Word>();
+    String[] arrayTmp = s.split(" ");
+    for (int i = 0; i < arrayTmp.length; i++) {
+      sentence.add(new Word(arrayTmp[i], i + offset));
     }
+    //sentence = s;
+    begin = f1;
+    end = f2;
+    aSpeaker = spk;
+    conditions = cond;
+    this.ID = getUID();
+  }
 
-    public Speaker getaSpeaker() {
-        return aSpeaker;
-    }
+  public Sector(ArrayList<Word> words, float f1, float f2, Speaker spk, String cond, int offset) {
+    sentence = (ArrayList<Word>) words.clone();
+    begin = f1;
+    end = f2;
+    aSpeaker = spk;
+    conditions = cond;
+    this.ID = getUID();
+  }
 
-    public void setSpeaker(Speaker aSpeaker) {
-        this.aSpeaker = aSpeaker;
-    }
+  public Speaker getaSpeaker() {
+    return aSpeaker;
+  }
 
-    public int getLength() {
-        return sentence.size();
-    }
-    
-    public int getLengthInChars() {
-        int size = 0;
-        for (Word w : getSentence()) {
-            size += w.getLength() + 1;
-        }
-        size--;
-        return size;
-    }
+  public void setSpeaker(Speaker aSpeaker) {
+    this.aSpeaker = aSpeaker;
+  }
 
-    public int getPosition() {
-        int pos = Integer.MAX_VALUE;
-        for (Word w : getSentence())
-            if (w.getPosition() < pos)
-                pos = w.getPosition();
-        return pos;
-    }
-    
-    public int getID() {
-        return ID;
-    }
+  public int getLength() {
+    return sentence.size();
+  }
 
-    public float getBegin() {
-        return begin;
+  public int getLengthInChars() {
+    int size = 0;
+    for (Word w : getSentence()) {
+      size += w.getLength() + 1;
     }
+    size--;
+    return size;
+  }
 
-    public void setBegin(float begin) {
-        this.begin = begin;
+  public int getPosition() {
+    int pos = Integer.MAX_VALUE;
+    for (Word w : getSentence()) {
+      if (w.getPosition() < pos) {
+        pos = w.getPosition();
+      }
     }
+    return pos;
+  }
 
-    public String getConditions() {
-        return conditions;
-    }
+  public int getID() {
+    return ID;
+  }
 
-    public void setConditions(String conditions) {
-        this.conditions = conditions;
-    }
+  public float getBegin() {
+    return begin;
+  }
 
-    public float getEnd() {
-        return end;
-    }
+  public void setBegin(float begin) {
+    this.begin = begin;
+  }
 
-    public void setEnd(float end) {
-        this.end = end;
-    }
+  public String getConditions() {
+    return conditions;
+  }
 
-    public ArrayList<Word> getSentence() {
-        return sentence;
-    }
+  public void setConditions(String conditions) {
+    this.conditions = conditions;
+  }
 
-    /**
-     * Get the word from the sector by it's position.
-     * @param pos - global position of the word.
-     * @param offset - offset of the segment.
-     * @return the Word if any
-     */
-    public Word getWordByPossition(int pos) {
-        for (Word w : sentence) {
-            if (w.getPosition() <= pos && w.getPosition() + w.getLength() >= pos) {
-                return w;
-            }
-        }
-        return null;
-    }
+  public float getEnd() {
+    return end;
+  }
 
-    @Override
-    public String toString() {
-        Iterator<Word> itr = sentence.iterator();
-        StringBuilder str = new StringBuilder();
-        while (itr.hasNext()) {
-            str.append(itr.next().toString());
-        }
-        return str.toString();
-    }
-    private static int UID = 0;
+  public void setEnd(float end) {
+    this.end = end;
+  }
 
-    private static int getUID() {
-        UID++;
-        return UID;
+  public ArrayList<Word> getSentence() {
+    return sentence;
+  }
+
+  /**
+   * Get the word from the sector by it's position.
+   * @param pos - global position of the word.
+   * @param offset - offset of the segment.
+   * @return the Word if any
+   */
+  public Word getWordByPossition(int pos) {
+    for (Word w : sentence) {
+      if (w.getPosition() <= pos && w.getPosition() + w.getLength() >= pos) {
+        return w;
+      }
     }
+    return null;
+  }
+
+  @Override
+  public String toString() {
+    Iterator<Word> itr = sentence.iterator();
+    StringBuilder str = new StringBuilder();
+    while (itr.hasNext()) {
+      str.append(itr.next().toString());
+    }
+    return str.toString();
+  }
+  private static int UID = 0;
+
+  private static int getUID() {
+    UID++;
+    return UID;
+  }
 }
