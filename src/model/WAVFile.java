@@ -19,6 +19,7 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -28,11 +29,13 @@ public class WAVFile {
     private String filePath;
     private String fileName;
     private String outFolder;
+    private String imgPath;
 
     public WAVFile(String filePath) {
         this.filePath = filePath;
         String [] elements = filePath.split("/");
         this.fileName = elements[elements.length-1];
+        imgPath = "";
         outFolder = "ressources/images/";
     }
     
@@ -91,7 +94,9 @@ public class WAVFile {
             
             
             
-                Wave wave = new Wave(filePath);
+                Wave wave = new Wave(filePath); 
+                
+                System.out.println("Le lengh du wav est : " + wave.length() + "secondes");
 
 		// print the wave header and info
 		
@@ -106,19 +111,39 @@ public class WAVFile {
                 render.renderWaveform(wave, outFolder+fileName+".jpg");
 
              
-            
+            imgPath = outFolder+fileName+".jpg";
             return outFolder+fileName+".jpg";
         }
     
     
         
-       public static Image scaleImage(Image source, int width, int height) {
-            BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g = (Graphics2D) img.getGraphics();
-            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-            g.drawImage(source, 0, 0, width, height, null);
-            g.dispose();
-            return img;
+       public Image scaleImage(Image source) {
+           Image imi = (new ImageIcon(source)).getImage();
+            return imi;
         }
-    
+       
+       
+       
+       public int getImageWidth(){
+           Image imi = (new ImageIcon(imgPath)).getImage();
+           int largeur = imi.getWidth(null);
+           return largeur;
+       }
+       
+        public int getImageHeigh(){
+           Image imi = (new ImageIcon(imgPath)).getImage();
+           int largeur = imi.getHeight(null);
+           return largeur;
+       }
+       
+       public int getDureeWav(){
+           Wave wave = new Wave(filePath); 
+           return (int)wave.length();
+       }
+       
+       public int getTimeCurrentPostion(int positionLarg){
+           int time;
+           time = (int)((this.getDureeWav()*positionLarg)/this.getImageWidth());
+           return time;
+       }
 }
