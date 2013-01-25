@@ -95,6 +95,12 @@ public class WAVFile {
     return outFolder + fileName + ".jpg";
   }
 
+    public String getImgPath() {
+        return imgPath;
+    }
+  
+  
+
   public Image scaleImage(Image source) {
     Image imi = (new ImageIcon(source)).getImage();
     return imi;
@@ -121,5 +127,11 @@ public class WAVFile {
     int time;
     time = (int) ((this.getDureeWav() * positionLarg) / this.getImageWidth());
     return time;
+  }
+  
+  public int getPositionByTime(int time){
+      int position;
+      position = (int) ((this.getImageWidth() * time) / this.getDureeWav());
+      return position;
   }
 }
