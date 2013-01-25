@@ -41,6 +41,15 @@ public class CTMFile {
             aSectorArray.add(seg2);
         }
     }
+    
+    public Sector getSectorByWord(Word wrd) {
+      for (Sector sec : getSectorArray()){
+        for (Word word : sec.getSentence())
+          if (word.getPosition() == wrd.getPosition())
+            return sec;
+      }
+      return null;
+    }
 
     public ArrayList<Word> getaWordArray() {
         return aWordArray;

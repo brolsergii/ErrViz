@@ -99,6 +99,13 @@ public class Sector {
   public ArrayList<Word> getSentence() {
     return sentence;
   }
+  
+  public String getStringSentence() {
+    String res = "";
+    for (Word wrd : getSentence())
+      res += wrd.getWord() + " ";
+    return res.trim();
+  }
 
   /**
    * Get the word from the sector by it's position.
