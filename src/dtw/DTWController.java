@@ -8,7 +8,8 @@ import java.util.HashMap;
  */
 public class DTWController {
 
-  public ArrayList<Error> errors = new ArrayList<Error>();
+  private ArrayList<Error> errors = new ArrayList<Error>();
+  private char[][] DTWMatchesChar;
 
   private void insertion(String str, int number) {
     errors.add(new Insertion(str, number));
@@ -24,6 +25,14 @@ public class DTWController {
     }
   }
 
+  public ArrayList<Error> getErrors() {
+    return errors;
+  }
+
+  public char[][] getAnalisysMatrix() {
+    return DTWMatchesChar;
+  }
+
   public void DTWCompare(String phraseRef, String phraseHyp) {
 
     System.out.println("REF: " + phraseRef);
@@ -36,7 +45,7 @@ public class DTWController {
     String[] phrase1Tokenized = phraseRef.split(" ");
     String[] phrase2Tokenized = phraseHyp.split(" ");
 
-    /* Trasforming pharases */
+    /* Trasforming pharases into int array */
     int[] phrase1Transformed = new int[phrase1Tokenized.length];
     int[] phrase2Transformed = new int[phrase2Tokenized.length];
 
@@ -61,7 +70,7 @@ public class DTWController {
       phraseWordCounter++;
     }
 
-    // Creating a distance matrix
+    /* Creating the DTW distance matrix */
     int[][] DTWDistance = new int[phrase1Transformed.length][phrase2Transformed.length];
     for (int i = 0; i < phrase1Transformed.length; i++) {
       for (int j = 0; j < phrase2Transformed.length; j++) {
@@ -77,72 +86,63 @@ public class DTWController {
         int min = Math.min(DTWDistance[i - 1][j],
                 Math.min(DTWDistance[i][j - 1],
                 DTWDistance[i - 1][j - 1]));
-//        if (min == DTWDistance[i - 1][j]) {
-//          System.out.println("insertion (" + i + "," + j + ") {" + phrase1Tokenized[i] + ", " + phrase2Tokenized[j] + "}");
-//        }
-//        if (min == DTWDistance[i][j - 1]) {
-//          System.out.println("deletion (" + i + "," + j + ") {" + phrase1Tokenized[i] + ", " + phrase2Tokenized[j] + "}");
-//        }
-//        if (min == DTWDistance[i][j]) {
-//          System.out.println("match (" + i + "," + j + ") {" + phrase1Tokenized[i] + ", " + phrase2Tokenized[j] + "}");
-//        }
         DTWDistance[i][j] = cost + min;
       }
     }
 
-    /* Searching for matches */
-    int[][] DTWMatchesTmp = new int[DTWDistance.length][DTWDistance[0].length];
-    char[][] DTWMatchesTmpChar = new char[DTWDistance.length][DTWDistance[0].length];
+    /* Initialising DTW trace matrix and analysis matrix */
+    int[][] DTWMatches = new int[DTWDistance.length][DTWDistance[0].length];
+    DTWMatchesChar = new char[DTWDistance.length][DTWDistance[0].length];
     for (int i = 0; i < DTWDistance.length; i++) {
       for (int j = 0; j < DTWDistance[0].length; j++) {
-        DTWMatchesTmp[i][j] = 0;
-        DTWMatchesTmpChar[i][j] = '-';
+        DTWMatches[i][j] = 0;
+        DTWMatchesChar[i][j] = '-';
       }
     }
 
+    /* Creating DTW trace matrix and analysing it */
     int currI = 0;
     int currJ = 0;
-    DTWMatchesTmp[0][0] = 1;
-    DTWMatchesTmpChar[0][0] = 's';
+    DTWMatches[0][0] = 1;
+    DTWMatchesChar[0][0] = 's';
     while (currI < DTWDistance.length - 1 && currJ < DTWDistance[0].length - 1) {
       if (DTWDistance[currI + 1][currJ + 1] <= DTWDistance[currI + 1][currJ]
               && DTWDistance[currI + 1][currJ + 1] <= DTWDistance[currI][currJ + 1]) {
         currI = currI + 1;
         currJ = currJ + 1;
-        DTWMatchesTmp[currI][currJ] = 1;
-        DTWMatchesTmpChar[currI][currJ] = 's';
+        DTWMatches[currI][currJ] = 1;
+        DTWMatchesChar[currI][currJ] = 's';
       } else if (DTWDistance[currI][currJ + 1] < DTWDistance[currI + 1][currJ + 1]
               && DTWDistance[currI][currJ + 1] <= DTWDistance[currI + 1][currJ]) {
         currJ = currJ + 1;
-        DTWMatchesTmp[currI][currJ] = 1;
-        DTWMatchesTmpChar[currI][currJ] = 'i';
+        DTWMatches[currI][currJ] = 1;
+        DTWMatchesChar[currI][currJ] = 'i';
       } else if (DTWDistance[currI + 1][currJ] < DTWDistance[currI + 1][currJ + 1]
               && DTWDistance[currI + 1][currJ] <= DTWDistance[currI][currJ + 1]) {
         currI = currI + 1;
-        DTWMatchesTmp[currI][currJ] = 1;
-        DTWMatchesTmpChar[currI][currJ] = 'd';
+        DTWMatches[currI][currJ] = 1;
+        DTWMatchesChar[currI][currJ] = 'd';
       }
       if (currJ == DTWDistance[0].length - 1 && currI != DTWDistance.length - 1) {
         for (int i = currI; i < DTWDistance.length; i++) {
-          if (DTWMatchesTmpChar[i][currJ] == '-') {
-            DTWMatchesTmp[i][currJ] = 1;
-            DTWMatchesTmpChar[i][currJ] = 'd';
+          if (DTWMatchesChar[i][currJ] == '-') {
+            DTWMatches[i][currJ] = 1;
+            DTWMatchesChar[i][currJ] = 'd';
           }
         }
       }
       if (currI == DTWDistance.length - 1 && currJ != DTWDistance[0].length - 1) {
         for (int j = currJ; j < DTWDistance[0].length; j++) {
-          if (DTWMatchesTmpChar[currI][j] == '-') {
-            DTWMatchesTmp[currI][j] = 1;
-            DTWMatchesTmpChar[currI][j] = 'i';
+          if (DTWMatchesChar[currI][j] == '-') {
+            DTWMatches[currI][j] = 1;
+            DTWMatchesChar[currI][j] = 'i';
           }
         }
       }
     }
 
-    int[][] DTWMatches = DTWMatchesTmp; // compatibility. TODO: fix it
-
     /* Output the result matrixes */
+    /* DTW matrix */
     System.out.println("Distance");
     for (int i = 0; i < DTWDistance.length; i++) {
       for (int j = 0; j < DTWDistance[0].length; j++) {
@@ -150,6 +150,7 @@ public class DTWController {
       }
       System.out.println();
     }
+    /* DTW trace */
     System.out.println("Matches");
     for (int i = 0; i < DTWMatches.length; i++) {
       for (int j = 0; j < DTWMatches[0].length; j++) {
@@ -157,17 +158,19 @@ public class DTWController {
       }
       System.out.println();
     }
+    /* DTW error analysis */
     System.out.println("Error");
-    for (int i = 0; i < DTWMatchesTmpChar.length; i++) {
-      for (int j = 0; j < DTWMatchesTmpChar[0].length; j++) {
-        System.out.print(DTWMatchesTmpChar[i][j] + " ");
+    for (int i = 0; i < DTWMatchesChar.length; i++) {
+      for (int j = 0; j < DTWMatchesChar[0].length; j++) {
+        System.out.print(DTWMatchesChar[i][j] + " ");
       }
       System.out.println();
     }
 
-    for (int i = 0; i < DTWMatchesTmpChar.length; i++) {
-      for (int j = 0; j < DTWMatchesTmpChar[0].length; j++) {
-        switch (DTWMatchesTmpChar[i][j]) {
+    /* Creating the errors list */
+    for (int i = 0; i < DTWMatchesChar.length; i++) {
+      for (int j = 0; j < DTWMatchesChar[0].length; j++) {
+        switch (DTWMatchesChar[i][j]) {
           case 's':
             match(phrase1Tokenized[i], phrase2Tokenized[j], i, j);
             break;
@@ -180,63 +183,5 @@ public class DTWController {
         }
       }
     }
-    /*
-    for (int i = 0; i < DTWMatches.length; i++) {
-    for (int j = 0; j < DTWMatches[0].length; j++) {
-    // A hack to avoid the precessing of the whole matrix and get empty collumns
-    if (DTWMatches[i][j] == 1 || i == DTWMatches.length - 1) {
-    int sumCollumn = 0;
-    int sumRow = 0;
-    
-    for (int m = 0; m < DTWMatches.length; m++) {
-    sumCollumn += DTWMatches[m][j];
-    }
-    for (int m = 0; m < DTWMatches[0].length; m++) {
-    sumRow += DTWMatches[i][m];
-    }
-    // Match case
-    if (sumCollumn == 1 && sumRow == 1 && DTWMatches[i][j] == 1) {
-    System.out.println("Match {" + phrase1Tokenized[i] + "; " + phrase2Tokenized[j] + "}");
-    match(phrase1Tokenized[i], phrase2Tokenized[j], i, j);
-    } // Deletion or match
-    else if (sumCollumn > 1 && sumRow == 1 && DTWMatches[i][j] == 1) {
-    int firstI = 0;
-    for (int m = 0; m < DTWMatches.length; m++) {
-    if (DTWMatches[m][j] == 1) {
-    firstI = m;
-    break;
-    }
-    }
-    if (i == firstI) {
-    System.out.println("Match {" + phrase1Tokenized[i] + "; " + phrase2Tokenized[j] + "}");
-    match(phrase1Tokenized[i], phrase2Tokenized[j], i, j);
-    } else {
-    System.out.println("Deletion {" + phrase1Tokenized[i] + "}");
-    deletion(phrase1Tokenized[i], i);
-    }
-    } // Insertion ot match
-    else if (sumRow > 1 && sumCollumn == 1 && DTWMatches[i][j] == 1) {
-    int firstJ = 0;
-    for (int m = 0; m < DTWMatches[0].length; m++) {
-    if (DTWMatches[i][j] == 1) {
-    firstJ = m;
-    break;
-    }
-    }
-    if (j == firstJ) {
-    System.out.println("Match {" + phrase1Tokenized[i] + "; " + phrase2Tokenized[j] + "}");
-    match(phrase1Tokenized[i], phrase2Tokenized[j], i, j);
-    } else {
-    System.out.println("Insertion {" + phrase2Tokenized[j] + "}");
-    insertion(phrase2Tokenized[j], j);
-    }
-    } // Insertion
-    else if (sumCollumn == 0) {
-    System.out.println("Insertion {" + phrase2Tokenized[j] + "}");
-    insertion(phrase2Tokenized[j], j);
-    }
-    }
-    }
-    }*/
   }
 }

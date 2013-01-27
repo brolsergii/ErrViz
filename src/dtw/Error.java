@@ -10,5 +10,4 @@ public abstract class Error {
   public int j;
   public String wordRef;
   public String wordHyp;
-  public Color color;
 }

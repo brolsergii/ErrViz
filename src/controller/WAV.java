@@ -54,7 +54,7 @@ public class WAV {
   }
 
   public void setCurrentTimeInSec(double time) {
-    // NOTE: we can only have here extrimely easy tasks
+    // NOTE: we can only have extrimely easy tasks here 
     currentTimeInSec = time;
     if (mainForm != null) {
       mainForm.setTimerLabel(getCurrentTimeInSec(), getOverralLength());

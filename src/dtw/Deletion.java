@@ -3,14 +3,17 @@ package dtw;
 import java.awt.Color;
 
 /**
- * @author
+ * @author sergii
  */
 public class Deletion extends Error {
 
   public Deletion(String word, int position) {
-    this.color = Color.ORANGE;
     this.wordRef = word;
     this.i = position;
+  }
+  
+  public static Color getColor() {
+    return Color.ORANGE;
   }
 
   @Override

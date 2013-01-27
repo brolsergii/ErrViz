@@ -8,11 +8,14 @@ import java.awt.Color;
 public class Substitution extends Error {
 
   public Substitution(String ref, String hyp, int i, int j) {
-    this.color = Color.RED;
     this.wordRef = ref;
     this.wordHyp = hyp;
     this.i = i;
     this.j = j;
+  }
+
+  public static Color getColor() {
+    return Color.RED;
   }
 
   @Override
