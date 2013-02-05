@@ -20,6 +20,6 @@ public class Substitution extends Error {
 
   @Override
   public String toString() {
-    return "Substitution {" + wordRef + "; " + wordHyp + "} possition {" + i + "; " + "j}";
+    return "Substitution {" + wordRef + "; " + wordHyp + "} possition {" + i + "; " + j +"}";
   }
 }

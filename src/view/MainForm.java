@@ -848,20 +848,20 @@ public class MainForm extends javax.swing.JFrame {
         String[] refTokenised = selectedSector.getStringSentence().split(" ");
         String[] hypTokenised = hypSector.getStringSentence().split(" ");
         char[][] analysisMatrix = dtw.getAnalisysMatrix();
-        for (int i = 0; i < analysisMatrix.length; i++) {
-          for (int j = 0; j < analysisMatrix[0].length; j++) {
+        for (int i = 1; i < analysisMatrix.length; i++) {
+          for (int j = 1; j < analysisMatrix[0].length; j++) {
             String[] normalisedStrings = new String[2];
             switch (analysisMatrix[i][j]) {
               case 's': {
-                normalisedStrings = normiliseStringsToEqualSize(refTokenised[i], hypTokenised[j]);
+                normalisedStrings = normiliseStringsToEqualSize(refTokenised[i - 1], hypTokenised[j - 1]);
                 break;
               }
               case 'i': {
-                normalisedStrings = normiliseStringsToEqualSize("", hypTokenised[j]);
+                normalisedStrings = normiliseStringsToEqualSize("", hypTokenised[j - 1]);
                 break;
               }
               case 'd': {
-                normalisedStrings = normiliseStringsToEqualSize(refTokenised[i], "");
+                normalisedStrings = normiliseStringsToEqualSize(refTokenised[i - 1], "");
                 break;
               }
             }
@@ -988,28 +988,8 @@ public class MainForm extends javax.swing.JFrame {
       WAV.getInstance().setMainForm(this);
       setFileTitle(file.getName());
       setTimerLabel(0, WAV.getInstance().getOverralLength());
-      loadSonograme();
+      //loadSonograme();
     }
-  }
-
-  public void loadSonograme() {
-    String image = WAV.getInstance().getSonogramme();
-    Image imi = (new ImageIcon(image)).getImage();
-    //Image img = WAV.getInstance().getWavFile();
-    Rectangle r = this.jLabel6.getBounds();
-    r.width = WAV.getInstance().getWavFile().getImageWidth();
-    //r.height = WAV.getInstance().getWavFile().getImageHeigh();
-    this.jLabel6.setBounds(r);
-    //this.scrollPane1.setBounds(r);
-    this.jLabel6.setIcon(new ImageIcon(imi));
-    this.jLabel6.setBackground(Color.GREEN);
-    this.jScrollPane6.getVerticalScrollBar().setValue(this.jScrollPane6.getVerticalScrollBar().getMaximum());
-    this.jScrollPane6.getVerticalScrollBar().setValue(50);
-    System.out.println(this.jScrollPane6.getVerticalScrollBar().getValue());
-    System.out.println(this.jScrollPane6.getVerticalScrollBar().getMaximum());
-    System.out.println(this.jScrollPane6.getVerticalScrollBar().getMinimum());
-    //this.validate();
-    //System.out.println("La largeur de l'image est : " + WAV.getInstance().getWavFile().getImageWidth() + " pixels");
   }
 
   public void loadALL() {
@@ -1041,10 +1021,30 @@ public class MainForm extends javax.swing.JFrame {
           WAV.getInstance().setMainForm(this);
           setFileTitle(file.getName());
           setTimerLabel(0, WAV.getInstance().getOverralLength());
-          loadSonograme();
+          //loadSonograme();
         }
       }
     }
+  }
+
+  public void loadSonograme() {
+    String image = WAV.getInstance().getSonogramme();
+    Image imi = (new ImageIcon(image)).getImage();
+    //Image img = WAV.getInstance().getWavFile();
+    Rectangle r = this.jLabel6.getBounds();
+    r.width = WAV.getInstance().getWavFile().getImageWidth();
+    //r.height = WAV.getInstance().getWavFile().getImageHeigh();
+    this.jLabel6.setBounds(r);
+    //this.scrollPane1.setBounds(r);
+    this.jLabel6.setIcon(new ImageIcon(imi));
+    this.jLabel6.setBackground(Color.GREEN);
+    this.jScrollPane6.getVerticalScrollBar().setValue(this.jScrollPane6.getVerticalScrollBar().getMaximum());
+    this.jScrollPane6.getVerticalScrollBar().setValue(50);
+    System.out.println(this.jScrollPane6.getVerticalScrollBar().getValue());
+    System.out.println(this.jScrollPane6.getVerticalScrollBar().getMaximum());
+    System.out.println(this.jScrollPane6.getVerticalScrollBar().getMinimum());
+    //this.validate();
+    //System.out.println("La largeur de l'image est : " + WAV.getInstance().getWavFile().getImageWidth() + " pixels");
   }
 
   public void setFileTitle(String fullFileName) {

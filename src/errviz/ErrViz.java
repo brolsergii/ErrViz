@@ -7,8 +7,8 @@ public class ErrViz {
 
   public static void main(String[] args) {
     //DTWController dTWController = new DTWController();
-    //dTWController.DTWCompare("I am the only one here too too ololo", "I 'm the only one there ololo");
-    //dTWController.DTWCompare("I am the only one here working hard", "I 'm the only one who is here working hard");
+    //dTWController.DTWCompare("et qui peut peut-être ne pas jouer", "et qui peut peut être ne pas jouer");
+    //dTWController.DTWCompare("I'm the only one working here", "I 'm the only one living here");
     MainForm MainFrame = new MainForm();
     MainFrame.setVisible(true);
   }
