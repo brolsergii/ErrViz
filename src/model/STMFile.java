@@ -54,4 +54,34 @@ public class STMFile {
         aSectorArray.add(s);
     }
     
+//    public String[] getSpeakers(){
+//        Iterator<Sector> it = aSectorArray.iterator();
+//        HashMap aMap = new HashMap();
+//        String name = "";
+//        while(it.hasNext()){
+//            name = it.next().getaSpeaker().toString();
+//            aMap.put(name,name);
+//        }
+//        ArrayList<String> aList = new ArrayList<String>(aMap.values());
+//        Collections.sort(aList);
+//        String[] speakers = new String[aList.size()];
+//        speakers = aList.toArray(speakers);
+//        return speakers;
+//    }
+
+//    public ArrayList<Sector> getSentencesForSpeaker(String name) {
+//        Iterator<Sector> it = aSectorArray.iterator();
+//        ArrayList<Sector> aList= new ArrayList<Sector>();
+//        Sector s;
+//        
+//        while(it.hasNext()){
+//            s=it.next();
+//            if(s.getaSpeaker().toString().compareTo(name)==0){
+//                aList.add(s);
+//            }
+//        }
+//        
+//        return aList;
+//    }
+    
 }
