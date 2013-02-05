@@ -7,60 +7,33 @@ import java.util.ArrayList;
  */
 public class DTWController {
 
-  private ArrayList<Error> errors = new ArrayList<Error>();
-  private char[][] DTWMatchesChar;
+  public DTWController(int segID) {
+    this.segInd = segID;
+  }
 
   private void insertion(String str, int number) {
-    errors.add(new Insertion(str, number));
+    errors.add(new Insertion(segInd, str, number));
   }
 
   private void deletion(String str, int number) {
-    errors.add(new Deletion(str, number));
+    errors.add(new Deletion(segInd, str, number));
   }
 
   private void match(String ref, String hyp, int i, int j) {
     if (!ref.equals(hyp)) {
-      errors.add(new Substitution(ref, hyp, i, j));
+      errors.add(new Substitution(segInd, ref, hyp, i, j));
     }
   }
 
+  /* Return a list of found errors in while comparing two 
+   * sentences. Is empty untill DTWCompare method was called
+   */
   public ArrayList<Error> getErrors() {
     return errors;
   }
 
   public char[][] getAnalisysMatrix() {
     return DTWMatchesChar;
-  }
-
-  public ArrayList<int[][]> getDTWMatchMatrixes(int[][] DTWDist, int[][] DTWMatch, int currI, int currJ) {
-    if (currI == DTWDist.length - 1 && currJ == DTWDist[0].length - 1) {
-      ArrayList<int[][]> res = new ArrayList<int[][]>();
-      res.add(DTWMatch);
-      return res;
-    }
-    int min = Math.min(Math.min(DTWDist[currI][currJ + 1],
-            DTWDist[currI + 1][currJ + 1]), DTWDist[currI][currJ + 1]);
-    if (DTWDist[currI][currJ + 1] == min && DTWDist[currI + 1][currJ + 1] > min && DTWDist[currI + 1][currJ] > min) {
-      currJ = currJ + 1;
-      DTWMatch[currI][currJ] = 1; // insertion
-      return getDTWMatchMatrixes(DTWDist, DTWMatch, currI, currJ);
-    }
-    if (DTWDist[currI + 1][currJ + 1] == min && DTWDist[currI + 1][currJ] > min && DTWDist[currI][currJ + 1] > min) {
-      currJ = currJ + 1;
-      currI = currI + 1;
-      DTWMatch[currI][currJ] = 1; // substitution
-      return getDTWMatchMatrixes(DTWDist, DTWMatch, currI, currJ);
-    }
-    if (DTWDist[currI + 1][currJ] == min && DTWDist[currI + 1][currJ + 1] > min && DTWDist[currI][currJ + 1] > min) {
-      currI = currI + 1;
-      DTWMatch[currI][currJ] = 1; // deletion
-      return getDTWMatchMatrixes(DTWDist, DTWMatch, currI, currJ);
-    }
-    if (DTWDist[currI][currJ + 1] == min && DTWDist[currI + 1][currJ + 1] == min && DTWDist[currI + 1][currJ] > min) {
-      // substitution && insertion
-      // DTWMatch2 = Arrays.copyOf(DTWMatch, DTWM)
-    }
-    return null;
   }
 
   public void DTWCompare(String phraseRef, String phraseHyp) {
@@ -150,42 +123,6 @@ public class DTWController {
           break;
         }
       }
-      /*
-      if (DTWDistance[currI - 1][currJ - 1] <= DTWDistance[currI - 1][currJ]
-      && DTWDistance[currI - 1][currJ - 1] <= DTWDistance[currI][currJ - 1]) {
-      currI = currI - 1;
-      currJ = currJ - 1;
-      DTWMatches[currI][currJ] = 1;
-      DTWMatchesChar[currI][currJ] = 's';
-      } else if (DTWDistance[currI][currJ - 1] < DTWDistance[currI - 1][currJ - 1]
-      && DTWDistance[currI][currJ - 1] <= DTWDistance[currI - 1][currJ]) {
-      currJ = currJ - 1;
-      DTWMatches[currI][currJ] = 1;
-      DTWMatchesChar[currI][currJ] = 'i';
-      } else if (DTWDistance[currI - 1][currJ] < DTWDistance[currI - 1][currJ - 1]
-      && DTWDistance[currI - 1][currJ] <= DTWDistance[currI][currJ - 1]) {
-      currI = currI - 1;
-      DTWMatches[currI][currJ] = 1;
-      DTWMatchesChar[currI][currJ] = 'd';
-      }
-      if (currJ == DTWDistance[0].length - 1 && currI != DTWDistance.length - 1) {
-      for (int i = currI; i < DTWDistance.length; i++) {
-      if (DTWMatchesChar[i][currJ] == '-') {
-      DTWMatches[i][currJ] = 1;
-      DTWMatchesChar[i][currJ] = 'd';
-      }
-      }
-      }
-      if (currI == DTWDistance.length - 1 && currJ != DTWDistance[0].length - 1) {
-      for (int j = currJ; j < DTWDistance[0].length; j++) {
-      if (DTWMatchesChar[currI][j] == '-') {
-      DTWMatches[currI][j] = 1;
-      DTWMatchesChar[currI][j] = 'i';
-      }
-      }
-      }
-       * 
-       */
     }
 
     /* Output the results (including intermediate result) matrixes */
@@ -239,4 +176,7 @@ public class DTWController {
       }
     }
   }
+  private ArrayList<Error> errors = new ArrayList<Error>();
+  private char[][] DTWMatchesChar;
+  private int segInd;
 }

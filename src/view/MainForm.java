@@ -14,6 +14,9 @@ import java.awt.Rectangle;
 import java.awt.geom.Line2D;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.naming.SizeLimitExceededException;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.text.BadLocationException;
@@ -251,7 +254,7 @@ public class MainForm extends javax.swing.JFrame {
     jPanel12.setLayout(new java.awt.BorderLayout());
 
     jTextPane3.setEditable(false);
-    jTextPane3.setFont(new java.awt.Font("FreeMono", 0, 15)); // NOI18N
+    jTextPane3.setFont(new java.awt.Font("FreeMono", 0, 15));
     jTextPane3.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseClicked(java.awt.event.MouseEvent evt) {
         jTextPane3MouseClicked(evt);
@@ -359,7 +362,7 @@ public class MainForm extends javax.swing.JFrame {
     jPanel10.setMinimumSize(new java.awt.Dimension(100, 90));
     jPanel10.setPreferredSize(new java.awt.Dimension(400, 90));
 
-    jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Deletion", "Substitution", "Insertion" }));
+    jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "All Errors", "Deletion", "Substitution", "Insertion" }));
 
     jButton1.setText("< Prev");
 
@@ -493,15 +496,10 @@ public class MainForm extends javax.swing.JFrame {
   }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-      // TODO: Search for all errors
-      try {
-        jTextPane1.getHighlighter().addHighlight(4, 8, new DefaultHighlightPainter(Color.red));
-      } catch (Exception e) {
-      }
+      searchAndHighlightErrors();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jTextPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextPane1MouseClicked
-      // TODO possibility of the several program states here
       //highlightSelectedSTMWord();
       clearHighlighting();
       highlightSelectedSTMSegment();
@@ -838,7 +836,7 @@ public class MainForm extends javax.swing.JFrame {
       Sector selectedSector = controller.STM.getInstance().getSectorByPossition(pos);
       jTextPane3.getHighlighter().removeAllHighlights();
       String info = "";
-      DTWController dtw = new DTWController();
+      DTWController dtw = new DTWController(selectedSector.getID());
       ArrayList<String> refArrayList = new ArrayList<String>();
       ArrayList<String> hypArrayList = new ArrayList<String>();
       if (selectedSector != null && hypSector != null) {
@@ -1123,4 +1121,114 @@ public class MainForm extends javax.swing.JFrame {
     String cuTime = "" + currentHours + ":" + currentMinutesStr + ":" + currentSecondsStr;
     jLabel5.setText("<" + cuTime + "/" + ovTime + ">");
   }
+
+  /* Error search highlighting area */
+  private void highlightInsertion(dtw.Error dtwErr) {
+    try {
+      int secPos = STM.getInstance().getSectorPositionInTheListByID(dtwErr.segId);
+      model.Sector secToHighlight = CTM.getInstance().getSectors().get(secPos);
+      model.Word wordToHighlight = secToHighlight.getSentence().get(dtwErr.j);
+      jTextPane1.getHighlighter().
+              addHighlight(wordToHighlight.getPosition(), wordToHighlight.getPosition() + wordToHighlight.getLength(), new DefaultHighlightPainter(dtw.Insertion.getColor()));
+    } catch (Exception ex) {
+      System.err.println(ex);
+    }
+  }
+
+  private void highlightDeletion(dtw.Error dtwErr) {
+    try {
+      model.Sector secToHighlight = STM.getInstance().getSectorByID(dtwErr.segId);
+      model.Word wordToHighlight = secToHighlight.getSentence().get(dtwErr.i);
+      jTextPane1.getHighlighter().
+              addHighlight(wordToHighlight.getPosition(), wordToHighlight.getPosition() + wordToHighlight.getLength(), new DefaultHighlightPainter(dtw.Deletion.getColor()));
+    } catch (Exception ex) {
+      System.err.println(ex);
+    }
+  }
+
+  private void highlightSubstitution(dtw.Error dtwErr) {
+    try {
+      int secPos = STM.getInstance().getSectorPositionInTheListByID(dtwErr.segId);
+      model.Sector secToHighlight1 = CTM.getInstance().getSectors().get(secPos);
+      model.Sector secToHighlight2 = STM.getInstance().getSectorByID(dtwErr.segId);
+
+      model.Word wordToHighlight1 = secToHighlight1.getSentence().get(dtwErr.j);
+      jTextPane1.getHighlighter().
+              addHighlight(wordToHighlight1.getPosition(), wordToHighlight1.getPosition() + wordToHighlight1.getLength(), new DefaultHighlightPainter(dtw.Substitution.getColor()));
+
+      model.Word wordToHighlight2 = secToHighlight2.getSentence().get(dtwErr.i);
+      jTextPane1.getHighlighter().
+              addHighlight(wordToHighlight2.getPosition(), wordToHighlight2.getPosition() + wordToHighlight2.getLength(), new DefaultHighlightPainter(dtw.Substitution.getColor()));
+
+    } catch (Exception ex) {
+      System.err.println(ex);
+    }
+  }
+
+  public void searchAndHighlightErrors() {
+    if (STM.getInstance().isLoaded() && CTM.getInstance().isLoaded()) {
+      try {
+        controller.Error.getInstance().lookForErrors(STM.getInstance().getSectors(), CTM.getInstance().getSectors());
+        jTextPane1.getHighlighter().removeAllHighlights();
+        String comboBoxValue = jComboBox2.getSelectedItem().toString();
+        int searchType = 0;
+        if (comboBoxValue.equals("All Errors")) {
+          searchType = 1;
+        } else if (comboBoxValue.equals("Deletion")) {
+          searchType = 2;
+        } else if (comboBoxValue.equals("Substitution")) {
+          searchType = 3;
+        } else if (comboBoxValue.equals("Insertion")) {
+          searchType = 4;
+        }
+        int numDel = 0;
+        int numSub = 0;
+        int numIns = 0;
+
+        String tmpStr = "";
+        String tmpStr2 = "";
+        for (dtw.Error dtwErr : controller.Error.getInstance().getErrors()) {
+          if (dtwErr instanceof dtw.Insertion) {
+            numIns++;
+            if (searchType == 4) {
+              tmpStr += dtwErr.toString() + "\n";
+              highlightInsertion(dtwErr);
+            }
+          }
+          if (dtwErr instanceof dtw.Deletion) {
+            numDel++;
+            if (searchType == 2) {
+              tmpStr += dtwErr.toString() + "\n";
+              highlightDeletion(dtwErr);
+            }
+          }
+          if (dtwErr instanceof dtw.Substitution) {
+            numSub++;
+            if (searchType == 3) {
+              tmpStr += dtwErr.toString() + "\n";
+              highlightSubstitution(dtwErr);
+            }
+          }
+          if (searchType == 1) {
+            if (dtwErr instanceof dtw.Insertion) {
+              highlightInsertion(dtwErr);
+            } else if (dtwErr instanceof dtw.Deletion) {
+              highlightDeletion(dtwErr);
+            } else if (dtwErr instanceof dtw.Substitution) {
+              highlightSubstitution(dtwErr);
+            }
+            tmpStr += dtwErr.toString() + "\n";
+          }
+        }
+        tmpStr2 += "Error number = " + (numDel + numSub + numIns) + "\n";
+        tmpStr2 += "Deletion number = " + numDel + "\n";
+        tmpStr2 += "Insertion number = " + numIns + "\n";
+        tmpStr2 += "Substitution number = " + numSub + "\n";
+        jTextPane3.setText(tmpStr2 + tmpStr);
+      } catch (SizeLimitExceededException ex) {
+        System.err.println(ex);
+      }
+    }
+  }
+  /* End of error search highlighting area */
 }

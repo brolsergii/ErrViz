@@ -7,7 +7,8 @@ import java.awt.Color;
  */
 public class Substitution extends Error {
 
-  public Substitution(String ref, String hyp, int i, int j) {
+  public Substitution(int segID, String ref, String hyp, int i, int j) {
+    this.segId = segID;
     this.wordRef = ref;
     this.wordHyp = hyp;
     this.i = i;
@@ -20,6 +21,6 @@ public class Substitution extends Error {
 
   @Override
   public String toString() {
-    return "Substitution {" + wordRef + "; " + wordHyp + "} possition {" + i + "; " + j +"}";
+    return "{" + segId + "}Substitution {" + wordRef + "; " + wordHyp + "} possition {" + i + "; " + j + "}";
   }
 }
