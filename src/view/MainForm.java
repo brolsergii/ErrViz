@@ -14,8 +14,6 @@ import java.awt.Rectangle;
 import java.awt.geom.Line2D;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.SizeLimitExceededException;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -1365,27 +1363,56 @@ public class MainForm extends javax.swing.JFrame {
       } else if (comboBoxValue.equals("Insertion")) {
         searchType = 4;
       }
-
+      dtw.Error currentError = controller.Error.getInstance().getCurrentError();
+      jTextArea3.setText(currentError.getDetails());
+      Sector refSeg = STM.getInstance().getSectorByID(currentError.segId);
+      int segIndex = STM.getInstance().getSectors().indexOf(refSeg);
+      Sector hypSeg = CTM.getInstance().getSectors().get(segIndex);
+      errorHighlight(currentError.segId, refSeg.getStringSentence(), hypSeg.getStringSentence());
+      Sector tmpRefSeg = controller.STM.getInstance().getSectorByID(currentError.segId);
+      try {
+        jTextPane1.getHighlighter().addHighlight(tmpRefSeg.getPosition(), tmpRefSeg.getPosition() + tmpRefSeg.getLengthInChars(), new DefaultHighlightPainter(Color.RED));
+        jTextPane1.moveCaretPosition(tmpRefSeg.getPosition());
+      } catch (BadLocationException ex) {
+        System.err.println(ex);
+      }
       switch (searchType) {
         case 1: {
-          dtw.Error currentError = controller.Error.getInstance().getCurrentError();
-          jTextArea3.setText(currentError.getDetails());
-          Sector refSeg = STM.getInstance().getSectorByID(currentError.segId);
-          int segIndex = STM.getInstance().getSectors().indexOf(refSeg);
-          Sector hypSeg = CTM.getInstance().getSectors().get(segIndex);
-          errorHighlight(currentError.segId, refSeg.getStringSentence(), hypSeg.getStringSentence());
-          Sector tmpRefSeg = controller.STM.getInstance().getSectorByID(currentError.segId);
-          try {
-            jTextPane1.getHighlighter().addHighlight(tmpRefSeg.getPosition(), tmpRefSeg.getPosition() + tmpRefSeg.getLengthInChars(), new DefaultHighlightPainter(Color.RED));
-            jTextPane1.moveCaretPosition(tmpRefSeg.getPosition());
-          } catch (BadLocationException ex) {
-            System.err.println(ex);
-          }
           if (direction > 0) {
             controller.Error.getInstance().goNextError();
           } else {
             controller.Error.getInstance().goPrevError();
           }
+          break;
+        }
+        case 2: {
+          do {
+            if (direction > 0) {
+              controller.Error.getInstance().goNextError();
+            } else {
+              controller.Error.getInstance().goPrevError();
+            }
+          } while (!(controller.Error.getInstance().getCurrentError() instanceof dtw.Deletion));
+          break;
+        }
+        case 3: {
+          do {
+            if (direction > 0) {
+              controller.Error.getInstance().goNextError();
+            } else {
+              controller.Error.getInstance().goPrevError();
+            }
+          } while (!(controller.Error.getInstance().getCurrentError() instanceof dtw.Substitution));
+          break;
+        }
+        case 4: {
+          do {
+            if (direction > 0) {
+              controller.Error.getInstance().goNextError();
+            } else {
+              controller.Error.getInstance().goPrevError();
+            }
+          } while (!(controller.Error.getInstance().getCurrentError() instanceof dtw.Insertion));
           break;
         }
       }
