@@ -27,10 +27,10 @@ public class WAVFile {
 
   public WAVFile(String filePath) {
     this.filePath = filePath;
-    String[] elements = filePath.split("/");
+    String[] elements = filePath.split(File.separator);
     this.fileName = elements[elements.length - 1];
     imgPath = "";
-    outFolder = ""; // TODO: may be a better solution
+    outFolder = "ressources" + File.separator; // TODO: may be a better solution
   }
 
   public void playSound() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
