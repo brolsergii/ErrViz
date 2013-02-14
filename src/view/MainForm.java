@@ -1076,6 +1076,7 @@ public class MainForm extends javax.swing.JFrame {
   }
 
   public void insertRedLine(int pos) {
+    this.jPanel11.repaint();
    
     int time = WAV.getInstance().getWavFile().getTimeCurrentPostion(pos);
     //System.out.println("Le coordonnes x =" + pos + " pixél ****** Clicque au temps t = " + time + " s");
@@ -1090,7 +1091,7 @@ public class MainForm extends javax.swing.JFrame {
   }
 
   public void insertRedLineFromTime(int time) {
-    //this.jLabel6.repaint();
+    this.jPanel11.repaint();
     
 
     int pos = WAV.getInstance().getWavFile().getPositionByTime(time);
