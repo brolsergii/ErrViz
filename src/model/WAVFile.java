@@ -17,6 +17,7 @@ import javax.swing.ImageIcon;
 /**
  * @author diouf
  * @author anasdridi
+ * @author yulia
  */
 public class WAVFile {
 
