@@ -988,7 +988,7 @@ public class MainForm extends javax.swing.JFrame {
       WAV.getInstance().setMainForm(this);
       setFileTitle(file.getName());
       setTimerLabel(0, WAV.getInstance().getOverralLength());
-      //loadSonograme();
+      loadSonograme();
     }
   }
 
@@ -1021,7 +1021,7 @@ public class MainForm extends javax.swing.JFrame {
           WAV.getInstance().setMainForm(this);
           setFileTitle(file.getName());
           setTimerLabel(0, WAV.getInstance().getOverralLength());
-          //loadSonograme();
+          loadSonograme();
         }
       }
     }
