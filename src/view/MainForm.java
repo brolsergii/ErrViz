@@ -12,6 +12,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.geom.Line2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
@@ -1028,7 +1029,7 @@ public class MainForm extends javax.swing.JFrame {
   }
 
   public void loadSonograme() {
-    String image = WAV.getInstance().getSonogramme();
+    BufferedImage image = WAV.getInstance().getSonogramme();
     Image imi = (new ImageIcon(image)).getImage();
     //Image img = WAV.getInstance().getWavFile();
     Rectangle r = this.jLabel6.getBounds();
@@ -1075,14 +1076,10 @@ public class MainForm extends javax.swing.JFrame {
   }
 
   public void insertRedLine(int pos) {
-    //this.jLabel6.repaint();
-    String image = WAV.getInstance().getWavFile().getImgPath();
-    Image imi = (new ImageIcon(image)).getImage();
-    this.jLabel6.setIcon(new ImageIcon(imi));
-
+   
     int time = WAV.getInstance().getWavFile().getTimeCurrentPostion(pos);
     //System.out.println("Le coordonnes x =" + pos + " pixél ****** Clicque au temps t = " + time + " s");
-    Graphics2D gr = (Graphics2D) this.jLabel6.getGraphics();
+    Graphics2D gr = (Graphics2D) this.jPanel11.getGraphics();
     //gr.scale(1, (double) jPanel11.getHeight()/(double) WAV.getInstance().getWavFile().getImageHeigh());
     gr.setPaint(Color.RED);
     //gr.drawLine(0, pos, WAV.getInstance().getWavFile().getImageHeigh(), pos);
@@ -1094,13 +1091,11 @@ public class MainForm extends javax.swing.JFrame {
 
   public void insertRedLineFromTime(int time) {
     //this.jLabel6.repaint();
-    String image = WAV.getInstance().getWavFile().getImgPath();
-    Image imi = (new ImageIcon(image)).getImage();
-    this.jLabel6.setIcon(new ImageIcon(imi));
+    
 
     int pos = WAV.getInstance().getWavFile().getPositionByTime(time);
     //System.out.println("Le coordonnes x =" + pos + " pixél ****** Clicque au temps t = " + time + " s");
-    Graphics2D gr = (Graphics2D) this.jLabel6.getGraphics();
+    Graphics2D gr = (Graphics2D) this.jPanel11.getGraphics();
     //gr.scale(1, (double) jPanel11.getHeight()/(double) WAV.getInstance().getWavFile().getImageHeigh());
     gr.setPaint(Color.RED);
     //gr.drawLine(0, pos, WAV.getInstance().getWavFile().getImageHeigh(), pos);

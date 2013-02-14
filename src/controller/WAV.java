@@ -1,6 +1,7 @@
 package controller;
 
 import audioplayer.WavePlayer;
+import java.awt.image.BufferedImage;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -89,7 +90,7 @@ public class WAV {
     wavFile.playSound();
   }
 
-  public String getSonogramme() {
+  public BufferedImage getSonogramme() {
     return wavFile.generateSonogramme();
   }
 

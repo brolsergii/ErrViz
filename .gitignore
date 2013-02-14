@@ -7,3 +7,4 @@
 *.ctm
 *.stm
 *.DS_Store
+/dist/
