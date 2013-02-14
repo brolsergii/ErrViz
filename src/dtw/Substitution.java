@@ -23,4 +23,10 @@ public class Substitution extends Error {
   public String toString() {
     return "{" + segId + "}Substitution {" + wordRef + "; " + wordHyp + "} possition {" + i + "; " + j + "}";
   }
+
+  @Override
+  public String getDetails() {
+    return "Error: Substitution \nSegment id : "
+            + this.segId + "\nSubstitution positions : (" + i + "," + j + ")";
+  }
 }

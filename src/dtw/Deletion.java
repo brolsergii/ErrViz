@@ -12,7 +12,7 @@ public class Deletion extends Error {
     this.wordRef = word;
     this.i = position;
   }
-  
+
   public static Color getColor() {
     return Color.ORANGE;
   }
@@ -20,5 +20,10 @@ public class Deletion extends Error {
   @Override
   public String toString() {
     return "{" + segId + "}Deletion {" + wordRef + "} possition {" + i + "}";
+  }
+
+  @Override
+  public String getDetails() {
+    return "Error: Deletion \nSegment id : " + this.segId + "\nDeleted word position:" + i;
   }
 }

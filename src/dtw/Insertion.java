@@ -21,4 +21,9 @@ public class Insertion extends Error {
   public String toString() {
     return "{" + segId + "}Insertion {" + wordHyp + "} possition {" + j + "}";
   }
+
+  @Override
+  public String getDetails() {
+    return "Error: Insertion \nSegment id : " + this.segId + "\nInsert word position:" + j;
+  }
 }

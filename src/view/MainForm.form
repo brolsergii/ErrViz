@@ -76,11 +76,6 @@
                 </MenuItem>
               </SubComponents>
             </Menu>
-            <Menu class="javax.swing.JMenu" name="jMenu4">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Search"/>
-              </Properties>
-            </Menu>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem4">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Exit"/>
@@ -717,6 +712,9 @@
                                       <AccessibilityProperties>
                                         <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="buttonPrev"/>
                                       </AccessibilityProperties>
+                                      <Events>
+                                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+                                      </Events>
                                     </Component>
                                     <Component class="javax.swing.JButton" name="jButton2">
                                       <Properties>
@@ -725,6 +723,9 @@
                                       <AccessibilityProperties>
                                         <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="buttonNext"/>
                                       </AccessibilityProperties>
+                                      <Events>
+                                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
+                                      </Events>
                                     </Component>
                                     <Component class="javax.swing.JButton" name="jButton3">
                                       <Properties>

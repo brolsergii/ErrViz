@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import model.CTMFile;
 import model.Word;
-import view.OutputHelper;
 
 /**
  * @author axel
@@ -26,18 +25,19 @@ public class ParserCTM implements Runnable {
         return file;
     }
 
+  @Override
     public void run() {
         try {
             String[] path = file.getFileName().split("/");
             String name = path[path.length - 1];
             StringBuilder stmName = new StringBuilder("/");
             for (int i = 0; i < path.length - 1; i++) {
-                stmName.append(path[i] + "/");
+                stmName.append(path[i]).append("/");
             }
             //System.out.println("Name : "+name);
             String[] n = name.split("\\.");
             //System.out.println("tab name : "+n.toString()+" tab size : "+n.length);
-            stmName.append(n[0] + ".stm");
+            stmName.append(n[0]).append(".stm");
             BufferedReader input = new BufferedReader(new InputStreamReader(new FileInputStream(stmName.toString())));
             String tempEnco = input.readLine();
             String[] tabEnco = tempEnco.split(" ");
