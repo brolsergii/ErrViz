@@ -17,6 +17,7 @@ import javax.swing.ImageIcon;
 /**
  * @author diouf
  * @author anasdridi
+ * @author yulia
  */
 public class WAVFile {
 
@@ -27,7 +28,7 @@ public class WAVFile {
 
   public WAVFile(String filePath) {
     this.filePath = filePath;
-    String[] elements = filePath.split("/");
+    String[] elements = filePath.split(File.separator);
     this.fileName = elements[elements.length - 1];
     imgPath = "";
     outFolder = ""; // TODO: may be a better solution
