@@ -35,10 +35,15 @@ public class ParserCTM implements Runnable {
             for (int i = 0; i < path.length - 1; i++) {
                 stmName.append(path[i] + File.separator);
             }
+            for (int i = 0; i < path.length ; i++) {
+                if(i == path.length-1)
+                    stmName.append(path[i].replaceAll(".ctm", ".stm"));
+            }
             //System.out.println("Name : "+name);
-            String[] n = name.split("\\.");
+            String[] n = name.split(File.separator);
             //System.out.println("tab name : "+n.toString()+" tab size : "+n.length);
-            stmName.append(n[0] + ".stm");
+    
+            //stmName.append(n[0] + ".stm");
             BufferedReader input = new BufferedReader(new InputStreamReader(new FileInputStream(stmName.toString())));
             String tempEnco = input.readLine();
             String[] tabEnco = tempEnco.split(" ");
