@@ -557,6 +557,16 @@ public class MainForm extends javax.swing.JFrame {
     private void jLabel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel6MouseClicked
       int pos = evt.getX();
       insertRedLine(pos);
+      int time = WAV.getInstance().getWavFile().getTimeCurrentPostion(pos);
+      WAV.getInstance().setCurrentTimeInSec(time);
+      if (WAV.getInstance().getPlayer().isPlaying()) {
+          this.playPause();
+          WAV.getInstance().setCurrentTimeInSec(time);
+          this.playFromCurrentTime();
+      }
+      else{
+          WAV.getInstance().setCurrentTimeInSec(time);
+      }
     }//GEN-LAST:event_jLabel6MouseClicked
 
   /**
@@ -1041,11 +1051,18 @@ public class MainForm extends javax.swing.JFrame {
     this.jLabel6.setBackground(Color.GREEN);
     this.jScrollPane6.getVerticalScrollBar().setValue(this.jScrollPane6.getVerticalScrollBar().getMaximum());
     this.jScrollPane6.getVerticalScrollBar().setValue(50);
-    System.out.println(this.jScrollPane6.getVerticalScrollBar().getValue());
-    System.out.println(this.jScrollPane6.getVerticalScrollBar().getMaximum());
-    System.out.println(this.jScrollPane6.getVerticalScrollBar().getMinimum());
+//    System.out.println(this.jScrollPane6.getVerticalScrollBar().getValue());
+//    System.out.println(this.jScrollPane6.getVerticalScrollBar().getMaximum());
+//    System.out.println(this.jScrollPane6.getVerticalScrollBar().getMinimum());
     //this.validate();
     //System.out.println("La largeur de l'image est : " + WAV.getInstance().getWavFile().getImageWidth() + " pixels");
+    this.updateScrolBars(0);
+    
+  }
+  
+  public void updateScrolBars(int n){
+      int widthLabel = 2*WAV.getInstance().getWavFile().getImageHeigh()/5;
+      this.jScrollPane6.getViewport().setViewPosition(new java.awt.Point(n, 130));
   }
 
   public void setFileTitle(String fullFileName) {
@@ -1077,17 +1094,25 @@ public class MainForm extends javax.swing.JFrame {
 
   public void insertRedLine(int pos) {
     this.jPanel11.repaint();
-   
+    
     int time = WAV.getInstance().getWavFile().getTimeCurrentPostion(pos);
     //System.out.println("Le coordonnes x =" + pos + " pixél ****** Clicque au temps t = " + time + " s");
     Graphics2D gr = (Graphics2D) this.jPanel11.getGraphics();
     //gr.scale(1, (double) jPanel11.getHeight()/(double) WAV.getInstance().getWavFile().getImageHeigh());
     gr.setPaint(Color.RED);
-    //gr.drawLine(0, pos, WAV.getInstance().getWavFile().getImageHeigh(), pos);
-    gr.draw(new Line2D.Double(pos, 0, pos, WAV.getInstance().getWavFile().getImageHeigh()));
-    this.playPause();
-    WAV.getInstance().setCurrentTimeInSec(time);
-    this.playFromCurrentTime();
+    
+    if(pos <= this.jPanel11.getWidth()){
+        gr.draw(new Line2D.Double(pos, 0, pos, WAV.getInstance().getWavFile().getImageHeigh()));
+        //WAV.getInstance().setCurrentTimeInSec(time);
+    } else{
+        this.updateScrolBars(pos-this.jPanel11.getWidth());
+        gr.draw(new Line2D.Double(this.jPanel11.getWidth(), 0, this.jPanel11.getWidth(), WAV.getInstance().getWavFile().getImageHeigh()));
+        //WAV.getInstance().setCurrentTimeInSec(time);
+    }
+    
+//    this.playPause();
+//    WAV.getInstance().setCurrentTimeInSec(time);
+//    this.playFromCurrentTime();
   }
 
   public void insertRedLineFromTime(int time) {
@@ -1096,12 +1121,22 @@ public class MainForm extends javax.swing.JFrame {
 
     int pos = WAV.getInstance().getWavFile().getPositionByTime(time);
     //System.out.println("Le coordonnes x =" + pos + " pixél ****** Clicque au temps t = " + time + " s");
+    int posByPanel = (int)this.jScrollPane6.getViewport().getViewPosition().getX();
+    
     Graphics2D gr = (Graphics2D) this.jPanel11.getGraphics();
     //gr.scale(1, (double) jPanel11.getHeight()/(double) WAV.getInstance().getWavFile().getImageHeigh());
     gr.setPaint(Color.RED);
     //gr.drawLine(0, pos, WAV.getInstance().getWavFile().getImageHeigh(), pos);
-    gr.draw(new Line2D.Double(pos, 0, pos, WAV.getInstance().getWavFile().getImageHeigh()));
-    //WAV.getInstance().setCurrentTimeInSec(time);
+    
+    if(pos <= this.jPanel11.getWidth()){
+        gr.draw(new Line2D.Double(pos, 0, pos, WAV.getInstance().getWavFile().getImageHeigh()));
+        //WAV.getInstance().setCurrentTimeInSec(time);
+    } else{
+        this.updateScrolBars(pos-this.jPanel11.getWidth());
+        gr.draw(new Line2D.Double(this.jPanel11.getWidth(), 0, this.jPanel11.getWidth(), WAV.getInstance().getWavFile().getImageHeigh()));
+        //WAV.getInstance().setCurrentTimeInSec(time);
+    }
+    
   }
 
   public void setTimerLabel(double currentTime, double overralTime) {

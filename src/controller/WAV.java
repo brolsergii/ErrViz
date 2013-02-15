@@ -59,7 +59,7 @@ public class WAV {
     currentTimeInSec = time;
     if (mainForm != null) {
       mainForm.setTimerLabel(getCurrentTimeInSec(), getOverralLength());
-      //mainForm.insertRedLineFromTime((int)time);
+      mainForm.insertRedLineFromTime((int)time);
     }
   }
 
