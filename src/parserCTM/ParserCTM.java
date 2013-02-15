@@ -1,6 +1,7 @@
 package parserCTM;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import model.CTMFile;
@@ -28,11 +29,11 @@ public class ParserCTM implements Runnable {
   @Override
     public void run() {
         try {
-            String[] path = file.getFileName().split("/");
+            String[] path = file.getFileName().split(File.pathSeparator);
             String name = path[path.length - 1];
-            StringBuilder stmName = new StringBuilder("/");
+            StringBuilder stmName = new StringBuilder(File.pathSeparator);
             for (int i = 0; i < path.length - 1; i++) {
-                stmName.append(path[i]).append("/");
+                stmName.append(path[i]).append(File.pathSeparator);
             }
             //System.out.println("Name : "+name);
             String[] n = name.split("\\.");

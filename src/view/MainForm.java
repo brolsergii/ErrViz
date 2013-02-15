@@ -11,9 +11,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.awt.geom.Line2D;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import javax.naming.SizeLimitExceededException;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -22,6 +24,7 @@ import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 import javax.swing.text.StyledDocument;
 import model.Sector;
 import model.Word;
+import utils.SpeakersUtilities;
 
 public class MainForm extends javax.swing.JFrame {
 
@@ -334,6 +337,16 @@ public class MainForm extends javax.swing.JFrame {
       public Object getElementAt(int i) { return strings[i]; }
     });
     jList1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+    jList1.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        jList1MouseClicked(evt);
+      }
+    });
+    jList1.addKeyListener(new java.awt.event.KeyAdapter() {
+      public void keyPressed(java.awt.event.KeyEvent evt) {
+        jList1KeyPressed(evt);
+      }
+    });
     jScrollPane4.setViewportView(jList1);
 
     javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
@@ -567,6 +580,14 @@ public class MainForm extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
       goToNextError(1);
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
+      speakersListMouseClicked(evt);
+    }//GEN-LAST:event_jList1MouseClicked
+
+    private void jList1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jList1KeyPressed
+      speakersListKeyPressed(evt);
+    }//GEN-LAST:event_jList1KeyPressed
 
   /**
    * @param args the command line arguments
@@ -1058,7 +1079,7 @@ public class MainForm extends javax.swing.JFrame {
         CTM.getInstance().doSegmentation();
         controller.Error.getInstance().lookForErrors(STM.getInstance().getSectors(), CTM.getInstance().getSectors());
       } catch (SizeLimitExceededException ex) {
-        ex.printStackTrace();
+        System.err.println(ex);
       }
     }
   }
@@ -1073,6 +1094,7 @@ public class MainForm extends javax.swing.JFrame {
       setFileTitle(file.getName());
       checkForCTMandSTM();
       updateSTMCTM();
+      displaySpeakers();
     }
   }
 
@@ -1086,6 +1108,7 @@ public class MainForm extends javax.swing.JFrame {
       setFileTitle(file.getName());
       checkForCTMandSTM();
       updateSTMCTM();
+      displaySpeakers();
     }
   }
 
@@ -1119,6 +1142,7 @@ public class MainForm extends javax.swing.JFrame {
           setFileTitle(file.getName());
           checkForCTMandSTM();
           updateSTMCTM();
+          displaySpeakers();
         }
         if (extension.equals("ctm")) {
           CTM.getInstance().load(file.getPath());
@@ -1281,7 +1305,7 @@ public class MainForm extends javax.swing.JFrame {
     if (STM.getInstance().isLoaded() && CTM.getInstance().isLoaded()) {
       try {
         controller.Error.getInstance().lookForErrors(STM.getInstance().getSectors(), CTM.getInstance().getSectors());
-        jTextPane1.getHighlighter().removeAllHighlights();
+        clearHighlighting();
         String comboBoxValue = jComboBox2.getSelectedItem().toString();
         int searchType = 0;
         if (comboBoxValue.equals("All Errors")) {
@@ -1342,6 +1366,7 @@ public class MainForm extends javax.swing.JFrame {
       }
     }
   }
+
   /* End of error search highlighting area */
 
   /* Navigation over errors.
@@ -1351,7 +1376,7 @@ public class MainForm extends javax.swing.JFrame {
   public void goToNextError(int direction) {
     try {
       controller.Error.getInstance().lookForErrors(STM.getInstance().getSectors(), CTM.getInstance().getSectors());
-      jTextPane1.getHighlighter().removeAllHighlights();
+      clearHighlighting();
       String comboBoxValue = jComboBox2.getSelectedItem().toString();
       int searchType = 0;
       if (comboBoxValue.equals("All Errors")) {
@@ -1421,4 +1446,51 @@ public class MainForm extends javax.swing.JFrame {
     }
   }
   /* End navigation over errors */
+
+  /* Sector: speaker list handlers */
+  public void highlightSectors(ArrayList<Sector> aSectorList) {
+    Iterator<Sector> it = aSectorList.iterator();
+    Sector s;
+    try {
+      boolean positionPlaced = false;
+      while (it.hasNext()) {
+        s = it.next();
+        jTextPane1.getHighlighter().addHighlight(s.getPosition(), s.getPosition() + s.getLengthInChars(), new DefaultHighlightPainter(Color.CYAN));
+        if (!positionPlaced) {
+          positionPlaced = true;
+          jTextPane1.setCaretPosition(s.getPosition());
+        }
+      }
+    } catch (Exception ex) {
+      System.err.println(ex);
+    }
+  }
+
+  public void highlightTextSaidBySelectedSpeaker(String name) {
+    if (STM.getInstance().isLoaded() && CTM.getInstance().isLoaded()) {
+      highlightSectors(SpeakersUtilities.getSentencesForASpeaker(STM.getInstance().getSTMFile().getaSectorArray(), name));
+      highlightSectors(SpeakersUtilities.getSentencesForASpeaker(CTM.getInstance().getSectors(), name));
+    }
+  }
+
+  private void speakersListMouseClicked(java.awt.event.MouseEvent evt) {
+    if (evt.getClickCount() == 2) {
+      clearHighlighting();
+      highlightTextSaidBySelectedSpeaker((String) jList1.getSelectedValue());
+    }
+  }
+
+  private void speakersListKeyPressed(java.awt.event.KeyEvent evt) {
+    if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+      clearHighlighting();
+      highlightTextSaidBySelectedSpeaker((String) jList1.getSelectedValue());
+    }
+  }
+
+  public void displaySpeakers() {
+    if (STM.getInstance().isLoaded()) {
+      jList1.setListData(SpeakersUtilities.getSpeakers(STM.getInstance().getSTMFile().getaSectorArray()));
+    }
+  }
+  /* End Sector: speaker list handlers */
 }
