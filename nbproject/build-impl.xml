@@ -1001,7 +1001,7 @@ is divided into following sections:
         <j2seproject3:copylibs manifest="${tmp.manifest.file}"/>
         <echo level="info">To run this application from the command line without Ant, try:</echo>
         <property location="${dist.jar}" name="dist.jar.resolved"/>
-        <echo level="info">java -jar "${dist.jar.resolved} "</echo>
+        <echo level="info">java -Xmx1024M -jar "${dist.jar.resolved} "</echo>
     </target>
     <target depends="-do-jar-with-libraries-pack" if="do.archive" name="-do-jar-with-libraries-delete-manifest">
         <delete>
