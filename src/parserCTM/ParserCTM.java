@@ -29,11 +29,11 @@ public class ParserCTM implements Runnable {
   @Override
     public void run() {
         try {
-            String[] path = file.getFileName().split(File.pathSeparator);
+            String[] path = file.getFileName().split(File.separator);
             String name = path[path.length - 1];
-            StringBuilder stmName = new StringBuilder(File.pathSeparator);
+            StringBuilder stmName = new StringBuilder(File.separator);
             for (int i = 0; i < path.length - 1; i++) {
-                stmName.append(path[i]).append(File.pathSeparator);
+                stmName.append(path[i]).append(File.separator);
             }
             //System.out.println("Name : "+name);
             String[] n = name.split("\\.");
