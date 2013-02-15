@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.naming.SizeLimitExceededException;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.text.BadLocationException;
@@ -443,7 +444,12 @@ public class MainForm extends javax.swing.JFrame {
 
     jMenu1.setText("File");
 
-    jMenuItem1.setText("New");
+    jMenuItem1.setText("Clean");
+    jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem1ActionPerformed(evt);
+      }
+    });
     jMenu1.add(jMenuItem1);
 
     jMenu3.setText("Load");
@@ -515,7 +521,7 @@ public class MainForm extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
       searchAndHighlightErrors();
     }//GEN-LAST:event_jButton3ActionPerformed
-
+  
     private void jTextPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextPane1MouseClicked
       //highlightSelectedSTMWord();
       clearHighlighting();
@@ -523,78 +529,82 @@ public class MainForm extends javax.swing.JFrame {
       highlightSelectedCTMWord();
       errorHighlightHandler();
     }//GEN-LAST:event_jTextPane1MouseClicked
-
+  
     private void jTextPane3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextPane3MouseClicked
       // Basically nothing to do here
     }//GEN-LAST:event_jTextPane3MouseClicked
-
+  
     private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
       loadSTM();
       updateLoadCheckBoxes();
     }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
-
+  
     private void jCheckBoxMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem2ActionPerformed
       loadCTM();
       updateLoadCheckBoxes();
     }//GEN-LAST:event_jCheckBoxMenuItem2ActionPerformed
-
+  
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
       exit();
     }//GEN-LAST:event_jMenuItem4ActionPerformed
-
+  
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
       aboutMenu();
     }//GEN-LAST:event_jMenuItem2ActionPerformed
-
+  
     private void jCheckBoxMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem3ActionPerformed
       loadWAV();
       updateLoadCheckBoxes();
     }//GEN-LAST:event_jCheckBoxMenuItem3ActionPerformed
-
+  
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
       playFromCurrentTime();
     }//GEN-LAST:event_jButton4ActionPerformed
-
+  
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
       playStop();
     }//GEN-LAST:event_jButton6ActionPerformed
-
+  
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
       playPause();
     }//GEN-LAST:event_jButton5ActionPerformed
-
+  
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
       loadALL();
       updateLoadCheckBoxes();
     }//GEN-LAST:event_jMenuItem5ActionPerformed
-
+  
     private void jLabel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel6MouseClicked
       int pos = evt.getX();
       insertRedLine(pos);
     }//GEN-LAST:event_jLabel6MouseClicked
-
+  
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
       goToNextError(-1);
     }//GEN-LAST:event_jButton1ActionPerformed
-
+  
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
       goToNextError(1);
     }//GEN-LAST:event_jButton2ActionPerformed
-
+  
     private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
       speakersListMouseClicked(evt);
     }//GEN-LAST:event_jList1MouseClicked
-
+  
     private void jList1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jList1KeyPressed
       speakersListKeyPressed(evt);
     }//GEN-LAST:event_jList1KeyPressed
+  
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+      cleanAllForms();
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
   /**
    * @param args the command line arguments
    */
   public static void main(String args[]) {
     java.awt.EventQueue.invokeLater(new Runnable() {
-
+      
       @Override
       public void run() {
         new MainForm().setVisible(true);
@@ -664,16 +674,29 @@ public class MainForm extends javax.swing.JFrame {
       System.exit(0);
     }
   }
-
+  
+  public void cleanAllForms() {
+    clearHighlighting();
+    jTextArea3.setText("");
+    jTextPane1.setText("");
+    jTextPane3.setText("");
+    jList1.setListData(new String[0]);
+    controller.CTM.getInstance().clear();
+    controller.STM.getInstance().clear();
+    controller.WAV.getInstance().clear();
+    controller.Error.getInstance().clear();
+    // TODO: clean up the Audio Player Panel
+  }
+  
   public void aboutMenu() {
     AboutForm af = new AboutForm();
     af.setVisible(true);
   }
-
+  
   @Deprecated
   public void _updateSTM() {
     StyledDocument doc = jTextPane1.getStyledDocument();
-
+    
     int currentPosition = 0;
     try {
       for (Sector sect : controller.STM.getInstance().getSectors()) {
@@ -689,7 +712,7 @@ public class MainForm extends javax.swing.JFrame {
       System.err.println(e);
     }
   }
-
+  
   public void updateSTMCTM() {
     StyledDocument doc = jTextPane1.getStyledDocument();
     try {
@@ -758,7 +781,7 @@ public class MainForm extends javax.swing.JFrame {
       }
     }
   }
-
+  
   @Deprecated
   public void highlightSelectedSTMWord() {
     int pos = jTextPane1.getCaretPosition();
@@ -778,7 +801,7 @@ public class MainForm extends javax.swing.JFrame {
       }
     }
   }
-
+  
   public void clearHighlighting() {
     jTextPane1.getHighlighter().removeAllHighlights();
   }
@@ -859,7 +882,7 @@ public class MainForm extends javax.swing.JFrame {
     return res;
   }
   /* End sector: error highlight helpers */
-
+  
   public void errorHighlight(int refID, String REF, String HYP) {
     if (CTM.getInstance().isLoaded() && STM.getInstance().isLoaded()) {
       jTextPane3.getHighlighter().removeAllHighlights();
@@ -870,7 +893,7 @@ public class MainForm extends javax.swing.JFrame {
 
       /* Doing DTW calculations  hypSector.getStringSentence()*/
       dtw.DTWCompare(REF, HYP);
-
+      
       String[] refTokenised = REF.split(" ");
       String[] hypTokenised = HYP.split(" ");
       char[][] analysisMatrix = dtw.getAnalisysMatrix();
@@ -930,7 +953,7 @@ public class MainForm extends javax.swing.JFrame {
       for (dtw.Error err : dtw.getErrors()) {
         info += err + "\n";
       }
-
+      
       jTextPane3.setText(info);
       try {
         for (int i = 0; i < refNormalisedTokenised.length; i++) {
@@ -952,7 +975,7 @@ public class MainForm extends javax.swing.JFrame {
       }
     }
   }
-
+  
   public void errorHighlightHandler() {
     if (CTM.getInstance().isLoaded() && STM.getInstance().isLoaded()) {
       int pos = jTextPane1.getCaretPosition();
@@ -970,7 +993,7 @@ public class MainForm extends javax.swing.JFrame {
 
         /* Setting the current error position */
         controller.Error.getInstance().setPositionBySectorID(selectedSector.getID());
-
+        
         String[] refTokenised = selectedSector.getStringSentence().split(" ");
         String[] hypTokenised = hypSector.getStringSentence().split(" ");
         char[][] analysisMatrix = dtw.getAnalisysMatrix();
@@ -1030,7 +1053,7 @@ public class MainForm extends javax.swing.JFrame {
         for (dtw.Error err : dtw.getErrors()) {
           info += err + "\n";
         }
-
+        
         jTextPane3.setText(info);
         try {
           for (int i = 0; i < refNormalisedTokenised.length; i++) {
@@ -1053,7 +1076,7 @@ public class MainForm extends javax.swing.JFrame {
       }
     }
   }
-
+  
   public void updateLoadCheckBoxes() {
     jCheckBoxMenuItem1.setState(false);
     jCheckBoxMenuItem2.setState(false);
@@ -1083,7 +1106,7 @@ public class MainForm extends javax.swing.JFrame {
       }
     }
   }
-
+  
   public void loadCTM() {
     final JFileChooser fc = new JFileChooser();
     int returnVal = fc.showOpenDialog(this);
@@ -1097,7 +1120,7 @@ public class MainForm extends javax.swing.JFrame {
       displaySpeakers();
     }
   }
-
+  
   public void loadSTM() {
     final JFileChooser fc = new JFileChooser();
     int returnVal = fc.showOpenDialog(this);
@@ -1111,7 +1134,7 @@ public class MainForm extends javax.swing.JFrame {
       displaySpeakers();
     }
   }
-
+  
   public void loadWAV() {
     final JFileChooser fc = new JFileChooser();
     int returnVal = fc.showOpenDialog(this);
@@ -1124,7 +1147,7 @@ public class MainForm extends javax.swing.JFrame {
       //loadSonograme();
     }
   }
-
+  
   public void loadALL() {
     final JFileChooser fc = new JFileChooser();
     fc.setMultiSelectionEnabled(true);
@@ -1160,7 +1183,7 @@ public class MainForm extends javax.swing.JFrame {
       }
     }
   }
-
+  
   public void loadSonograme() {
     String image = WAV.getInstance().getSonogramme();
     Image imi = (new ImageIcon(image)).getImage();
@@ -1180,19 +1203,19 @@ public class MainForm extends javax.swing.JFrame {
     //this.validate();
     //System.out.println("La largeur de l'image est : " + WAV.getInstance().getWavFile().getImageWidth() + " pixels");
   }
-
+  
   public void setFileTitle(String fullFileName) {
     String fileNames[] = fullFileName.split("\\.");
     this.setTitle("Current file : " + fileNames[0]);
   }
-
+  
   public void playFromCurrentTime() {
     if (!WAV.getInstance().getPlayer().isPlaying()) {
       WAV.getInstance().getPlayer().playFrom(WAV.getInstance().getCurrentTimeInSec());
       WAV.getInstance().startCounter();
     }
   }
-
+  
   public void playStop() {
     if (WAV.getInstance().getPlayer().isPlaying()) {
       WAV.getInstance().stopCounter();
@@ -1200,20 +1223,20 @@ public class MainForm extends javax.swing.JFrame {
       WAV.getInstance().setCurrentTimeInSec(0);
     }
   }
-
+  
   public void playPause() {
     if (WAV.getInstance().getPlayer().isPlaying()) {
       WAV.getInstance().stopCounter();
       WAV.getInstance().getPlayer().stop();
     }
   }
-
+  
   public void insertRedLine(int pos) {
     //this.jLabel6.repaint();
     String image = WAV.getInstance().getWavFile().getImgPath();
     Image imi = (new ImageIcon(image)).getImage();
     this.jLabel6.setIcon(new ImageIcon(imi));
-
+    
     int time = WAV.getInstance().getWavFile().getTimeCurrentPostion(pos);
     //System.out.println("Le coordonnes x =" + pos + " pixél ****** Clicque au temps t = " + time + " s");
     Graphics2D gr = (Graphics2D) this.jLabel6.getGraphics();
@@ -1225,13 +1248,13 @@ public class MainForm extends javax.swing.JFrame {
     WAV.getInstance().setCurrentTimeInSec(time);
     this.playFromCurrentTime();
   }
-
+  
   public void insertRedLineFromTime(int time) {
     //this.jLabel6.repaint();
     String image = WAV.getInstance().getWavFile().getImgPath();
     Image imi = (new ImageIcon(image)).getImage();
     this.jLabel6.setIcon(new ImageIcon(imi));
-
+    
     int pos = WAV.getInstance().getWavFile().getPositionByTime(time);
     //System.out.println("Le coordonnes x =" + pos + " pixél ****** Clicque au temps t = " + time + " s");
     Graphics2D gr = (Graphics2D) this.jLabel6.getGraphics();
@@ -1241,7 +1264,7 @@ public class MainForm extends javax.swing.JFrame {
     gr.draw(new Line2D.Double(pos, 0, pos, WAV.getInstance().getWavFile().getImageHeigh()));
     //WAV.getInstance().setCurrentTimeInSec(time);
   }
-
+  
   public void setTimerLabel(double currentTime, double overralTime) {
     int overralHours = ((int) overralTime) / 3600;
     int overralMinutes = (((int) overralTime) / 60) % 60;
@@ -1270,7 +1293,7 @@ public class MainForm extends javax.swing.JFrame {
       System.err.println(ex);
     }
   }
-
+  
   private void highlightDeletion(dtw.Error dtwErr) {
     try {
       model.Sector secToHighlight = STM.getInstance().getSectorByID(dtwErr.segId);
@@ -1281,26 +1304,26 @@ public class MainForm extends javax.swing.JFrame {
       System.err.println(ex);
     }
   }
-
+  
   private void highlightSubstitution(dtw.Error dtwErr) {
     try {
       int secPos = STM.getInstance().getSectorPositionInTheListByID(dtwErr.segId);
       model.Sector secToHighlight1 = CTM.getInstance().getSectors().get(secPos);
       model.Sector secToHighlight2 = STM.getInstance().getSectorByID(dtwErr.segId);
-
+      
       model.Word wordToHighlight1 = secToHighlight1.getSentence().get(dtwErr.j);
       jTextPane1.getHighlighter().
               addHighlight(wordToHighlight1.getPosition(), wordToHighlight1.getPosition() + wordToHighlight1.getLength(), new DefaultHighlightPainter(dtw.Substitution.getColor()));
-
+      
       model.Word wordToHighlight2 = secToHighlight2.getSentence().get(dtwErr.i);
       jTextPane1.getHighlighter().
               addHighlight(wordToHighlight2.getPosition(), wordToHighlight2.getPosition() + wordToHighlight2.getLength(), new DefaultHighlightPainter(dtw.Substitution.getColor()));
-
+      
     } catch (Exception ex) {
       System.err.println(ex);
     }
   }
-
+  
   public void searchAndHighlightErrors() {
     if (STM.getInstance().isLoaded() && CTM.getInstance().isLoaded()) {
       try {
@@ -1320,7 +1343,7 @@ public class MainForm extends javax.swing.JFrame {
         int numDel = 0;
         int numSub = 0;
         int numIns = 0;
-
+        
         String tmpStr = "";
         String tmpStr2 = "";
         for (dtw.Error dtwErr : controller.Error.getInstance().getErrors()) {
@@ -1465,28 +1488,28 @@ public class MainForm extends javax.swing.JFrame {
       System.err.println(ex);
     }
   }
-
+  
   public void highlightTextSaidBySelectedSpeaker(String name) {
     if (STM.getInstance().isLoaded() && CTM.getInstance().isLoaded()) {
       highlightSectors(SpeakersUtilities.getSentencesForASpeaker(STM.getInstance().getSTMFile().getaSectorArray(), name));
       highlightSectors(SpeakersUtilities.getSentencesForASpeaker(CTM.getInstance().getSectors(), name));
     }
   }
-
+  
   private void speakersListMouseClicked(java.awt.event.MouseEvent evt) {
     if (evt.getClickCount() == 2) {
       clearHighlighting();
       highlightTextSaidBySelectedSpeaker((String) jList1.getSelectedValue());
     }
   }
-
+  
   private void speakersListKeyPressed(java.awt.event.KeyEvent evt) {
     if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
       clearHighlighting();
       highlightTextSaidBySelectedSpeaker((String) jList1.getSelectedValue());
     }
   }
-
+  
   public void displaySpeakers() {
     if (STM.getInstance().isLoaded()) {
       jList1.setListData(SpeakersUtilities.getSpeakers(STM.getInstance().getSTMFile().getaSectorArray()));

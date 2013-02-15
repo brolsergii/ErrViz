@@ -26,6 +26,10 @@ public class CTM {
     return false;
   }
 
+  public void clear() {
+    ctmFile = null;
+  }
+
   public void load(String file) {
     ctmFile = new CTMFile(file);
     ParserCTM pctm = new ParserCTM(ctmFile);

@@ -25,6 +25,11 @@ public class STM {
     }
     return false;
   }
+  
+  public void clear()
+  {
+    stmFile = null;
+  }
 
   public void load(String file) {
     stmFile = new STMFile(file);

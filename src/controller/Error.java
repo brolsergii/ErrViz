@@ -35,6 +35,11 @@ public class Error {
       errors.addAll(dtwc.getErrors());
     }
   }
+  
+  public void clear() {
+    this.errors = new ArrayList<dtw.Error>();
+    this.current = 0;
+  }
 
   public boolean isErrorListEmpty() {
     return errors.isEmpty();
@@ -42,10 +47,6 @@ public class Error {
 
   public ArrayList<dtw.Error> getErrors() {
     return errors;
-  }
-
-  public void clean() {
-    this.errors = new ArrayList<dtw.Error>();
   }
 
   public dtw.Error getCurrentError() {
