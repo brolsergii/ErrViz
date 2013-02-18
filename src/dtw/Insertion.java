@@ -7,7 +7,8 @@ import java.awt.Color;
  */
 public class Insertion extends Error {
 
-  public Insertion(String word, int position) {
+  public Insertion(int segID, String word, int position) {
+    this.segId = segID;
     this.wordHyp = word;
     this.j = position;
   }
@@ -18,6 +19,11 @@ public class Insertion extends Error {
 
   @Override
   public String toString() {
-    return "Insertion {" + wordHyp + "} possition {" + j + "}";
+    return "{" + segId + "}Insertion {" + wordHyp + "} possition {" + j + "}";
+  }
+
+  @Override
+  public String getDetails() {
+    return "Error: Insertion \nSegment id : " + this.segId + "\nInsert word position:" + j;
   }
 }

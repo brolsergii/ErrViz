@@ -34,8 +34,11 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
               <Properties>
-                <Property name="text" type="java.lang.String" value="New"/>
+                <Property name="text" type="java.lang.String" value="Clean"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem1ActionPerformed"/>
+              </Events>
             </MenuItem>
             <Menu class="javax.swing.JMenu" name="jMenu3">
               <Properties>
@@ -75,11 +78,6 @@
                   </Events>
                 </MenuItem>
               </SubComponents>
-            </Menu>
-            <Menu class="javax.swing.JMenu" name="jMenu4">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Search"/>
-              </Properties>
             </Menu>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem4">
               <Properties>
@@ -644,6 +642,10 @@
                                             </Property>
                                             <Property name="selectionMode" type="int" value="0"/>
                                           </Properties>
+                                          <Events>
+                                            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jList1MouseClicked"/>
+                                            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jList1KeyPressed"/>
+                                          </Events>
                                         </Component>
                                       </SubComponents>
                                     </Container>
@@ -701,10 +703,11 @@
                                     <Component class="javax.swing.JComboBox" name="jComboBox2">
                                       <Properties>
                                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                                          <StringArray count="3">
-                                            <StringItem index="0" value="Deletion"/>
-                                            <StringItem index="1" value="Substitution"/>
-                                            <StringItem index="2" value="Insertion"/>
+                                          <StringArray count="4">
+                                            <StringItem index="0" value="All Errors"/>
+                                            <StringItem index="1" value="Deletion"/>
+                                            <StringItem index="2" value="Substitution"/>
+                                            <StringItem index="3" value="Insertion"/>
                                           </StringArray>
                                         </Property>
                                       </Properties>
@@ -716,6 +719,9 @@
                                       <AccessibilityProperties>
                                         <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="buttonPrev"/>
                                       </AccessibilityProperties>
+                                      <Events>
+                                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+                                      </Events>
                                     </Component>
                                     <Component class="javax.swing.JButton" name="jButton2">
                                       <Properties>
@@ -724,6 +730,9 @@
                                       <AccessibilityProperties>
                                         <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="buttonNext"/>
                                       </AccessibilityProperties>
+                                      <Events>
+                                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
+                                      </Events>
                                     </Component>
                                     <Component class="javax.swing.JButton" name="jButton3">
                                       <Properties>

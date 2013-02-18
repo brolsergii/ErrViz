@@ -7,17 +7,23 @@ import java.awt.Color;
  */
 public class Deletion extends Error {
 
-  public Deletion(String word, int position) {
+  public Deletion(int segID, String word, int position) {
+    this.segId = segID;
     this.wordRef = word;
     this.i = position;
   }
-  
+
   public static Color getColor() {
     return Color.ORANGE;
   }
 
   @Override
   public String toString() {
-    return "Deletion {" + wordRef + "} possition {" + i + "}";
+    return "{" + segId + "}Deletion {" + wordRef + "} possition {" + i + "}";
+  }
+
+  @Override
+  public String getDetails() {
+    return "Error: Deletion \nSegment id : " + this.segId + "\nDeleted word position:" + i;
   }
 }

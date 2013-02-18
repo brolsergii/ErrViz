@@ -35,6 +35,17 @@ public class WAV {
     return false;
   }
 
+  public void clear() {
+    this.player = null;
+    this.wavFile = null;
+    if (timer != null) {
+      timer.cancel();
+    }
+    this.currentTimeInSec = 0;
+    this.overralTimeInSec = 0;
+    // TODO: possible clean the AudioPlayerPanel
+  }
+
   public void setMainForm(MainForm mf) {
     mainForm = mf;
   }
@@ -90,7 +101,8 @@ public class WAV {
     wavFile.playSound();
   }
 
-  public BufferedImage getSonogramme() {
+
+  public BufferedImage getSonogramme() throws UnsupportedAudioFileException, IOException, Exception {
     return wavFile.generateSonogramme();
   }
 
