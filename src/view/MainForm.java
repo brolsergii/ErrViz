@@ -1208,6 +1208,7 @@ public class MainForm extends javax.swing.JFrame {
         try {             
             image = WAV.getInstance().getSonogramme();
             Image imi = (new ImageIcon(image)).getImage();
+            imi = imi.getScaledInstance(image.getWidth(), this.jScrollPane6.getHeight()-10, Image.SCALE_DEFAULT);
             //Image img = WAV.getInstance().getWavFile();
             Rectangle r = this.jLabel6.getBounds();
             r.width = WAV.getInstance().getWavFile().getImageWidth();
@@ -1232,8 +1233,7 @@ public class MainForm extends javax.swing.JFrame {
   }
   
   public void updateScrolBars(int n){
-      int widthLabel = 2*WAV.getInstance().getWavFile().getImageHeigh()/5;
-      this.jScrollPane6.getViewport().setViewPosition(new java.awt.Point(n, 30));
+      this.jScrollPane6.getViewport().setViewPosition(new java.awt.Point(n, 0));
   }
   
   public void setFileTitle(String fullFileName) {
@@ -1273,8 +1273,12 @@ public class MainForm extends javax.swing.JFrame {
     gr.setPaint(Color.RED);
     
 
-    if(pos <= this.jPanel11.getWidth()-20){
+    if(pos <= this.jPanel11.getWidth()/2 -10){
         gr.draw(new Line2D.Double(pos, 0, pos, WAV.getInstance().getWavFile().getImageHeigh()));
+        //WAV.getInstance().setCurrentTimeInSec(time);
+    } else if(pos <= this.jLabel6.getWidth()-this.jPanel11.getWidth()/2 +20){
+        this.updateScrolBars(pos-this.jPanel11.getWidth()/2 + 20);
+        gr.draw(new Line2D.Double(this.jPanel11.getWidth()/2 -10, 0, this.jPanel11.getWidth()/2 -10, WAV.getInstance().getWavFile().getImageHeigh()));
         //WAV.getInstance().setCurrentTimeInSec(time);
     } else{
         this.updateScrolBars(pos-this.jPanel11.getWidth());
@@ -1297,8 +1301,12 @@ public class MainForm extends javax.swing.JFrame {
     //gr.drawLine(0, pos, WAV.getInstance().getWavFile().getImageHeigh(), pos);
     
 
-    if(pos <= this.jPanel11.getWidth()-20){
+    if(pos <= this.jPanel11.getWidth()/2 -10){
         gr.draw(new Line2D.Double(pos, 0, pos, WAV.getInstance().getWavFile().getImageHeigh()));
+        //WAV.getInstance().setCurrentTimeInSec(time);
+    } else if(pos <= this.jLabel6.getWidth()-this.jPanel11.getWidth()/2 +20){
+        this.updateScrolBars(pos-this.jPanel11.getWidth()/2 + 20);
+        gr.draw(new Line2D.Double(this.jPanel11.getWidth()/2 -10, 0, this.jPanel11.getWidth()/2 -10, WAV.getInstance().getWavFile().getImageHeigh()));
         //WAV.getInstance().setCurrentTimeInSec(time);
     } else{
         this.updateScrolBars(pos-this.jPanel11.getWidth());
