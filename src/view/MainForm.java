@@ -687,7 +687,7 @@ public class MainForm extends javax.swing.JFrame {
     controller.Error.getInstance().clear();
     updateLoadCheckBoxes();
     this.setTitle("Cleaned");
-    // TODO: clean up the Audio Player Panel
+    // TODO: clean up the Audio Player Psanel
   }
   
   public void aboutMenu() {
