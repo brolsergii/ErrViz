@@ -685,6 +685,8 @@ public class MainForm extends javax.swing.JFrame {
     controller.STM.getInstance().clear();
     controller.WAV.getInstance().clear();
     controller.Error.getInstance().clear();
+    updateLoadCheckBoxes();
+    this.setTitle("Cleaned");
     // TODO: clean up the Audio Player Panel
   }
   
