@@ -379,7 +379,7 @@ public class AudioWaveformCreator {
     System.exit(1);
     }*/
     AudioWaveformCreator awc =
-            new AudioWaveformCreator("/home/darion/education/UdM/M2_Project/ErrViz/ressources/20031006_1155_1240_RFI_ELDA.wav", "/home/darion/test.png");
+            new AudioWaveformCreator("/home/darion/education/UdM/M2_Project/ErrViz/ressources/20040423_0000_1159_RFI_ELDA.wav", "/home/darion/test.png");
     awc.createAudioInputStream(10000, 350);
   }
 
