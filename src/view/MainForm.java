@@ -11,10 +11,18 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.naming.SizeLimitExceededException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.text.BadLocationException;
@@ -22,6 +30,7 @@ import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 import javax.swing.text.StyledDocument;
 import model.Sector;
 import model.Word;
+import utils.SpeakersUtilities;
 
 public class MainForm extends javax.swing.JFrame {
 
@@ -89,7 +98,6 @@ public class MainForm extends javax.swing.JFrame {
     jCheckBoxMenuItem2 = new javax.swing.JCheckBoxMenuItem();
     jCheckBoxMenuItem3 = new javax.swing.JCheckBoxMenuItem();
     jMenuItem5 = new javax.swing.JMenuItem();
-    jMenu4 = new javax.swing.JMenu();
     jMenuItem4 = new javax.swing.JMenuItem();
     jMenu2 = new javax.swing.JMenu();
     jMenuItem3 = new javax.swing.JMenuItem();
@@ -252,7 +260,7 @@ public class MainForm extends javax.swing.JFrame {
     jPanel12.setLayout(new java.awt.BorderLayout());
 
     jTextPane3.setEditable(false);
-    jTextPane3.setFont(new java.awt.Font("FreeMono", 0, 15)); // NOI18N
+    jTextPane3.setFont(new java.awt.Font("FreeMono", 0, 15));
     jTextPane3.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseClicked(java.awt.event.MouseEvent evt) {
         jTextPane3MouseClicked(evt);
@@ -335,6 +343,16 @@ public class MainForm extends javax.swing.JFrame {
       public Object getElementAt(int i) { return strings[i]; }
     });
     jList1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+    jList1.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        jList1MouseClicked(evt);
+      }
+    });
+    jList1.addKeyListener(new java.awt.event.KeyAdapter() {
+      public void keyPressed(java.awt.event.KeyEvent evt) {
+        jList1KeyPressed(evt);
+      }
+    });
     jScrollPane4.setViewportView(jList1);
 
     javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
@@ -360,11 +378,21 @@ public class MainForm extends javax.swing.JFrame {
     jPanel10.setMinimumSize(new java.awt.Dimension(100, 90));
     jPanel10.setPreferredSize(new java.awt.Dimension(400, 90));
 
-    jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Deletion", "Substitution", "Insertion" }));
+    jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "All Errors", "Deletion", "Substitution", "Insertion" }));
 
     jButton1.setText("< Prev");
+    jButton1.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jButton1ActionPerformed(evt);
+      }
+    });
 
     jButton2.setText("Next >");
+    jButton2.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jButton2ActionPerformed(evt);
+      }
+    });
 
     jButton3.setText("All");
     jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -421,7 +449,12 @@ public class MainForm extends javax.swing.JFrame {
 
     jMenu1.setText("File");
 
-    jMenuItem1.setText("New");
+    jMenuItem1.setText("Clean");
+    jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jMenuItem1ActionPerformed(evt);
+      }
+    });
     jMenu1.add(jMenuItem1);
 
     jMenu3.setText("Load");
@@ -460,9 +493,6 @@ public class MainForm extends javax.swing.JFrame {
 
     jMenu1.add(jMenu3);
 
-    jMenu4.setText("Search");
-    jMenu1.add(jMenu4);
-
     jMenuItem4.setText("Exit");
     jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -494,66 +524,61 @@ public class MainForm extends javax.swing.JFrame {
   }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-      // TODO: Search for all errors
-      try {
-        jTextPane1.getHighlighter().addHighlight(4, 8, new DefaultHighlightPainter(Color.red));
-      } catch (Exception e) {
-      }
+      searchAndHighlightErrors();
     }//GEN-LAST:event_jButton3ActionPerformed
-
+  
     private void jTextPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextPane1MouseClicked
-      // TODO possibility of the several program states here
       //highlightSelectedSTMWord();
       clearHighlighting();
       highlightSelectedSTMSegment();
       highlightSelectedCTMWord();
-      errorHighlight();
+      errorHighlightHandler();
     }//GEN-LAST:event_jTextPane1MouseClicked
-
+  
     private void jTextPane3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextPane3MouseClicked
-      // TODO (Error -> WAV) synchronization
+      // Basically nothing to do here
     }//GEN-LAST:event_jTextPane3MouseClicked
-
+  
     private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
       loadSTM();
       updateLoadCheckBoxes();
     }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
-
+  
     private void jCheckBoxMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem2ActionPerformed
       loadCTM();
       updateLoadCheckBoxes();
     }//GEN-LAST:event_jCheckBoxMenuItem2ActionPerformed
-
+  
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
       exit();
     }//GEN-LAST:event_jMenuItem4ActionPerformed
-
+  
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
       aboutMenu();
     }//GEN-LAST:event_jMenuItem2ActionPerformed
-
+  
     private void jCheckBoxMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem3ActionPerformed
       loadWAV();
       updateLoadCheckBoxes();
     }//GEN-LAST:event_jCheckBoxMenuItem3ActionPerformed
-
+  
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
       playFromCurrentTime();
     }//GEN-LAST:event_jButton4ActionPerformed
-
+  
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
       playStop();
     }//GEN-LAST:event_jButton6ActionPerformed
-
+  
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
       playPause();
     }//GEN-LAST:event_jButton5ActionPerformed
-
+  
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
       loadALL();
       updateLoadCheckBoxes();
     }//GEN-LAST:event_jMenuItem5ActionPerformed
-
+  
     private void jLabel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel6MouseClicked
       int pos = evt.getX();
       insertRedLine(pos);
@@ -568,13 +593,33 @@ public class MainForm extends javax.swing.JFrame {
           WAV.getInstance().setCurrentTimeInSec(time);
       }
     }//GEN-LAST:event_jLabel6MouseClicked
+  
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+      goToNextError(-1);
+    }//GEN-LAST:event_jButton1ActionPerformed
+  
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+      goToNextError(1);
+    }//GEN-LAST:event_jButton2ActionPerformed
+  
+    private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
+      speakersListMouseClicked(evt);
+    }//GEN-LAST:event_jList1MouseClicked
+  
+    private void jList1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jList1KeyPressed
+      speakersListKeyPressed(evt);
+    }//GEN-LAST:event_jList1KeyPressed
+  
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+      cleanAllForms();
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
   /**
    * @param args the command line arguments
    */
   public static void main(String args[]) {
     java.awt.EventQueue.invokeLater(new Runnable() {
-
+      
       @Override
       public void run() {
         new MainForm().setVisible(true);
@@ -603,7 +648,6 @@ public class MainForm extends javax.swing.JFrame {
   private javax.swing.JMenu jMenu1;
   private javax.swing.JMenu jMenu2;
   private javax.swing.JMenu jMenu3;
-  private javax.swing.JMenu jMenu4;
   private javax.swing.JMenuBar jMenuBar1;
   private javax.swing.JMenuItem jMenuItem1;
   private javax.swing.JMenuItem jMenuItem2;
@@ -645,16 +689,29 @@ public class MainForm extends javax.swing.JFrame {
       System.exit(0);
     }
   }
-
+  
+  public void cleanAllForms() {
+    clearHighlighting();
+    jTextArea3.setText("");
+    jTextPane1.setText("");
+    jTextPane3.setText("");
+    jList1.setListData(new String[0]);
+    controller.CTM.getInstance().clear();
+    controller.STM.getInstance().clear();
+    controller.WAV.getInstance().clear();
+    controller.Error.getInstance().clear();
+    // TODO: clean up the Audio Player Panel
+  }
+  
   public void aboutMenu() {
     AboutForm af = new AboutForm();
     af.setVisible(true);
   }
-
+  
   @Deprecated
   public void _updateSTM() {
     StyledDocument doc = jTextPane1.getStyledDocument();
-
+    
     int currentPosition = 0;
     try {
       for (Sector sect : controller.STM.getInstance().getSectors()) {
@@ -670,7 +727,7 @@ public class MainForm extends javax.swing.JFrame {
       System.err.println(e);
     }
   }
-
+  
   public void updateSTMCTM() {
     StyledDocument doc = jTextPane1.getStyledDocument();
     try {
@@ -739,7 +796,7 @@ public class MainForm extends javax.swing.JFrame {
       }
     }
   }
-
+  
   @Deprecated
   public void highlightSelectedSTMWord() {
     int pos = jTextPane1.getCaretPosition();
@@ -759,7 +816,7 @@ public class MainForm extends javax.swing.JFrame {
       }
     }
   }
-
+  
   public void clearHighlighting() {
     jTextPane1.getHighlighter().removeAllHighlights();
   }
@@ -840,8 +897,101 @@ public class MainForm extends javax.swing.JFrame {
     return res;
   }
   /* End sector: error highlight helpers */
+  
+  public void errorHighlight(int refID, String REF, String HYP) {
+    if (CTM.getInstance().isLoaded() && STM.getInstance().isLoaded()) {
+      jTextPane3.getHighlighter().removeAllHighlights();
+      String info = "";
+      DTWController dtw = new DTWController(refID);
+      ArrayList<String> refArrayList = new ArrayList<String>();
+      ArrayList<String> hypArrayList = new ArrayList<String>();
 
-  public void errorHighlight() {
+      /* Doing DTW calculations  hypSector.getStringSentence()*/
+      dtw.DTWCompare(REF, HYP);
+      
+      String[] refTokenised = REF.split(" ");
+      String[] hypTokenised = HYP.split(" ");
+      char[][] analysisMatrix = dtw.getAnalisysMatrix();
+      for (int i = 1; i < analysisMatrix.length; i++) {
+        for (int j = 1; j < analysisMatrix[0].length; j++) {
+          String[] normalisedStrings = new String[2];
+          switch (analysisMatrix[i][j]) {
+            case 's': {
+              normalisedStrings = normiliseStringsToEqualSize(refTokenised[i - 1], hypTokenised[j - 1]);
+              break;
+            }
+            case 'i': {
+              normalisedStrings = normiliseStringsToEqualSize("", hypTokenised[j - 1]);
+              break;
+            }
+            case 'd': {
+              normalisedStrings = normiliseStringsToEqualSize(refTokenised[i - 1], "");
+              break;
+            }
+          }
+          if (normalisedStrings[0] != null && normalisedStrings[1] != null) {
+            refArrayList.add(normalisedStrings[0]);
+            hypArrayList.add(normalisedStrings[1]);
+          }
+        }
+      }
+      String[] refNormalisedTokenised = (String[]) refArrayList.toArray(new String[1]);
+      String[] hypNormalisedTokenised = (String[]) hypArrayList.toArray(new String[1]);
+      int[] refPositions = new int[refNormalisedTokenised.length];
+      int[] hypPositions = new int[hypNormalisedTokenised.length];
+      int currentPos = 6; // "REF : "
+      String refSentenceNormalisedTokenised = "";
+      int index = 0;
+      for (String tmpStr : refNormalisedTokenised) {
+        refSentenceNormalisedTokenised += tmpStr + " ";
+        refPositions[index] = currentPos;
+        index++;
+        currentPos += 1 + tmpStr.length();
+      }
+      //refSentenceNormalisedTokenised = refSentenceNormalisedTokenised.trim();
+
+      currentPos += 7; // " HYP : "
+      index = 0;
+      String hypSentenceNormalisedTokenised = "";
+      for (String tmpStr : hypNormalisedTokenised) {
+        hypSentenceNormalisedTokenised += tmpStr + " ";
+        hypPositions[index] = currentPos;
+        index++;
+        currentPos += 1 + tmpStr.length();
+      }
+      // hypSentenceNormalisedTokenised = hypSentenceNormalisedTokenised.trim();
+        /* Output the results of normalisation */
+      info += "REF : " + refSentenceNormalisedTokenised + "\n";
+      info += "HYP : " + hypSentenceNormalisedTokenised + "\n";
+
+      /* Errors text messages */
+      for (dtw.Error err : dtw.getErrors()) {
+        info += err + "\n";
+      }
+      
+      jTextPane3.setText(info);
+      try {
+        for (int i = 0; i < refNormalisedTokenised.length; i++) {
+          String refStr = refNormalisedTokenised[i].trim();
+          String hypStr = hypNormalisedTokenised[i].trim();
+          if (refStr.isEmpty()) {
+            jTextPane3.getHighlighter().addHighlight(refPositions[i], refPositions[i] + refNormalisedTokenised[i].length(), new DefaultHighlightPainter(Insertion.getColor()));
+            jTextPane3.getHighlighter().addHighlight(hypPositions[i], hypPositions[i] + hypNormalisedTokenised[i].length(), new DefaultHighlightPainter(Insertion.getColor()));
+          } else if (hypStr.isEmpty()) {
+            jTextPane3.getHighlighter().addHighlight(refPositions[i], refPositions[i] + refNormalisedTokenised[i].length(), new DefaultHighlightPainter(Deletion.getColor()));
+            jTextPane3.getHighlighter().addHighlight(hypPositions[i], hypPositions[i] + hypNormalisedTokenised[i].length(), new DefaultHighlightPainter(Deletion.getColor()));
+          } else if (!hypStr.equals(refStr)) {
+            jTextPane3.getHighlighter().addHighlight(refPositions[i], refPositions[i] + refNormalisedTokenised[i].length(), new DefaultHighlightPainter(Substitution.getColor()));
+            jTextPane3.getHighlighter().addHighlight(hypPositions[i], hypPositions[i] + hypNormalisedTokenised[i].length(), new DefaultHighlightPainter(Substitution.getColor()));
+          }
+        }
+      } catch (Exception ex) {
+        System.err.println(ex);
+      }
+    }
+  }
+  
+  public void errorHighlightHandler() {
     if (CTM.getInstance().isLoaded() && STM.getInstance().isLoaded()) {
       int pos = jTextPane1.getCaretPosition();
       Word selectedWord = controller.CTM.getInstance().getWordByPossition(pos);
@@ -849,13 +999,16 @@ public class MainForm extends javax.swing.JFrame {
       Sector selectedSector = controller.STM.getInstance().getSectorByPossition(pos);
       jTextPane3.getHighlighter().removeAllHighlights();
       String info = "";
-      DTWController dtw = new DTWController();
+      DTWController dtw = new DTWController(selectedSector.getID());
       ArrayList<String> refArrayList = new ArrayList<String>();
       ArrayList<String> hypArrayList = new ArrayList<String>();
       if (selectedSector != null && hypSector != null) {
         /* Doing DTW calculations */
         dtw.DTWCompare(selectedSector.getStringSentence(), hypSector.getStringSentence());
 
+        /* Setting the current error position */
+        controller.Error.getInstance().setPositionBySectorID(selectedSector.getID());
+        
         String[] refTokenised = selectedSector.getStringSentence().split(" ");
         String[] hypTokenised = hypSector.getStringSentence().split(" ");
         char[][] analysisMatrix = dtw.getAnalisysMatrix();
@@ -906,7 +1059,7 @@ public class MainForm extends javax.swing.JFrame {
           index++;
           currentPos += 1 + tmpStr.length();
         }
-        //hypSentenceNormalisedTokenised = hypSentenceNormalisedTokenised.trim();
+        // hypSentenceNormalisedTokenised = hypSentenceNormalisedTokenised.trim();
         /* Output the results of normalisation */
         info += "REF : " + refSentenceNormalisedTokenised + "\n";
         info += "HYP : " + hypSentenceNormalisedTokenised + "\n";
@@ -915,7 +1068,7 @@ public class MainForm extends javax.swing.JFrame {
         for (dtw.Error err : dtw.getErrors()) {
           info += err + "\n";
         }
-
+        
         jTextPane3.setText(info);
         try {
           for (int i = 0; i < refNormalisedTokenised.length; i++) {
@@ -938,7 +1091,7 @@ public class MainForm extends javax.swing.JFrame {
       }
     }
   }
-
+  
   public void updateLoadCheckBoxes() {
     jCheckBoxMenuItem1.setState(false);
     jCheckBoxMenuItem2.setState(false);
@@ -960,10 +1113,15 @@ public class MainForm extends javax.swing.JFrame {
    */
   public void checkForCTMandSTM() {
     if (STM.getInstance().isLoaded() && CTM.getInstance().isLoaded()) {
-      CTM.getInstance().doSegmentation();
+      try {
+        CTM.getInstance().doSegmentation();
+        controller.Error.getInstance().lookForErrors(STM.getInstance().getSectors(), CTM.getInstance().getSectors());
+      } catch (SizeLimitExceededException ex) {
+        System.err.println(ex);
+      }
     }
   }
-
+  
   public void loadCTM() {
     final JFileChooser fc = new JFileChooser();
     int returnVal = fc.showOpenDialog(this);
@@ -974,9 +1132,10 @@ public class MainForm extends javax.swing.JFrame {
       setFileTitle(file.getName());
       checkForCTMandSTM();
       updateSTMCTM();
+      displaySpeakers();
     }
   }
-
+  
   public void loadSTM() {
     final JFileChooser fc = new JFileChooser();
     int returnVal = fc.showOpenDialog(this);
@@ -987,9 +1146,10 @@ public class MainForm extends javax.swing.JFrame {
       setFileTitle(file.getName());
       checkForCTMandSTM();
       updateSTMCTM();
+      displaySpeakers();
     }
   }
-
+  
   public void loadWAV() {
     final JFileChooser fc = new JFileChooser();
     int returnVal = fc.showOpenDialog(this);
@@ -1002,7 +1162,7 @@ public class MainForm extends javax.swing.JFrame {
       loadSonograme();
     }
   }
-
+  
   public void loadALL() {
     final JFileChooser fc = new JFileChooser();
     fc.setMultiSelectionEnabled(true);
@@ -1020,6 +1180,7 @@ public class MainForm extends javax.swing.JFrame {
           setFileTitle(file.getName());
           checkForCTMandSTM();
           updateSTMCTM();
+          displaySpeakers();
         }
         if (extension.equals("ctm")) {
           CTM.getInstance().load(file.getPath());
@@ -1037,46 +1198,53 @@ public class MainForm extends javax.swing.JFrame {
       }
     }
   }
+  
+  
+  
+public void loadSonograme(){
+    BufferedImage image;
+        try {        
+            image = WAV.getInstance().getSonogramme();
+            Image imi = (new ImageIcon(image)).getImage();
+            //Image img = WAV.getInstance().getWavFile();
+            Rectangle r = this.jLabel6.getBounds();
+            r.width = WAV.getInstance().getWavFile().getImageWidth();
+            //r.height = WAV.getInstance().getWavFile().getImageHeigh();
+            this.jLabel6.setBounds(r);
+            //this.scrollPane1.setBounds(r);
+            this.jLabel6.setIcon(new ImageIcon(imi));
+            this.jLabel6.setBackground(Color.GREEN);
+            this.jScrollPane6.getVerticalScrollBar().setValue(this.jScrollPane6.getVerticalScrollBar().getMaximum());
+            this.jScrollPane6.getVerticalScrollBar().setValue(50);
 
-  public void loadSonograme() {
-    BufferedImage image = WAV.getInstance().getSonogramme();
-    Image imi = (new ImageIcon(image)).getImage();
-    //Image img = WAV.getInstance().getWavFile();
-    Rectangle r = this.jLabel6.getBounds();
-    r.width = WAV.getInstance().getWavFile().getImageWidth();
-    //r.height = WAV.getInstance().getWavFile().getImageHeigh();
-    this.jLabel6.setBounds(r);
-    //this.scrollPane1.setBounds(r);
-    this.jLabel6.setIcon(new ImageIcon(imi));
-    this.jLabel6.setBackground(Color.GREEN);
-    this.jScrollPane6.getVerticalScrollBar().setValue(this.jScrollPane6.getVerticalScrollBar().getMaximum());
-    this.jScrollPane6.getVerticalScrollBar().setValue(50);
-//    System.out.println(this.jScrollPane6.getVerticalScrollBar().getValue());
-//    System.out.println(this.jScrollPane6.getVerticalScrollBar().getMaximum());
-//    System.out.println(this.jScrollPane6.getVerticalScrollBar().getMinimum());
-    //this.validate();
-    //System.out.println("La largeur de l'image est : " + WAV.getInstance().getWavFile().getImageWidth() + " pixels");
-    this.updateScrolBars(0);
-    
+            this.updateScrolBars(0);
+        } catch (UnsupportedAudioFileException ex) {
+            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
   }
   
   public void updateScrolBars(int n){
       int widthLabel = 2*WAV.getInstance().getWavFile().getImageHeigh()/5;
-      this.jScrollPane6.getViewport().setViewPosition(new java.awt.Point(n, 130));
+      this.jScrollPane6.getViewport().setViewPosition(new java.awt.Point(n, 50));
   }
-
+  
   public void setFileTitle(String fullFileName) {
     String fileNames[] = fullFileName.split("\\.");
     this.setTitle("Current file : " + fileNames[0]);
   }
-
+  
   public void playFromCurrentTime() {
     if (!WAV.getInstance().getPlayer().isPlaying()) {
       WAV.getInstance().getPlayer().playFrom(WAV.getInstance().getCurrentTimeInSec());
       WAV.getInstance().startCounter();
     }
   }
-
+  
   public void playStop() {
     if (WAV.getInstance().getPlayer().isPlaying()) {
       WAV.getInstance().stopCounter();
@@ -1084,14 +1252,14 @@ public class MainForm extends javax.swing.JFrame {
       WAV.getInstance().setCurrentTimeInSec(0);
     }
   }
-
+  
   public void playPause() {
     if (WAV.getInstance().getPlayer().isPlaying()) {
       WAV.getInstance().stopCounter();
       WAV.getInstance().getPlayer().stop();
     }
   }
-
+  
   public void insertRedLine(int pos) {
     //this.jPanel11.repaint();
     
@@ -1109,10 +1277,7 @@ public class MainForm extends javax.swing.JFrame {
         gr.draw(new Line2D.Double(this.jPanel11.getWidth(), 0, this.jPanel11.getWidth(), WAV.getInstance().getWavFile().getImageHeigh()));
         //WAV.getInstance().setCurrentTimeInSec(time);
     }
-    
-//    this.playPause();
-//    WAV.getInstance().setCurrentTimeInSec(time);
-//    this.playFromCurrentTime();
+
   }
 
   public void insertRedLineFromTime(int time) {
@@ -1138,7 +1303,7 @@ public class MainForm extends javax.swing.JFrame {
     }
     
   }
-
+  
   public void setTimerLabel(double currentTime, double overralTime) {
     int overralHours = ((int) overralTime) / 3600;
     int overralMinutes = (((int) overralTime) / 60) % 60;
@@ -1154,4 +1319,240 @@ public class MainForm extends javax.swing.JFrame {
     String cuTime = "" + currentHours + ":" + currentMinutesStr + ":" + currentSecondsStr;
     jLabel5.setText("<" + cuTime + "/" + ovTime + ">");
   }
+
+  /* Error search highlighting area */
+  private void highlightInsertion(dtw.Error dtwErr) {
+    try {
+      int secPos = STM.getInstance().getSectorPositionInTheListByID(dtwErr.segId);
+      model.Sector secToHighlight = CTM.getInstance().getSectors().get(secPos);
+      model.Word wordToHighlight = secToHighlight.getSentence().get(dtwErr.j);
+      jTextPane1.getHighlighter().
+              addHighlight(wordToHighlight.getPosition(), wordToHighlight.getPosition() + wordToHighlight.getLength(), new DefaultHighlightPainter(dtw.Insertion.getColor()));
+    } catch (Exception ex) {
+      System.err.println(ex);
+    }
+  }
+  
+  private void highlightDeletion(dtw.Error dtwErr) {
+    try {
+      model.Sector secToHighlight = STM.getInstance().getSectorByID(dtwErr.segId);
+      model.Word wordToHighlight = secToHighlight.getSentence().get(dtwErr.i);
+      jTextPane1.getHighlighter().
+              addHighlight(wordToHighlight.getPosition(), wordToHighlight.getPosition() + wordToHighlight.getLength(), new DefaultHighlightPainter(dtw.Deletion.getColor()));
+    } catch (Exception ex) {
+      System.err.println(ex);
+    }
+  }
+  
+  private void highlightSubstitution(dtw.Error dtwErr) {
+    try {
+      int secPos = STM.getInstance().getSectorPositionInTheListByID(dtwErr.segId);
+      model.Sector secToHighlight1 = CTM.getInstance().getSectors().get(secPos);
+      model.Sector secToHighlight2 = STM.getInstance().getSectorByID(dtwErr.segId);
+      
+      model.Word wordToHighlight1 = secToHighlight1.getSentence().get(dtwErr.j);
+      jTextPane1.getHighlighter().
+              addHighlight(wordToHighlight1.getPosition(), wordToHighlight1.getPosition() + wordToHighlight1.getLength(), new DefaultHighlightPainter(dtw.Substitution.getColor()));
+      
+      model.Word wordToHighlight2 = secToHighlight2.getSentence().get(dtwErr.i);
+      jTextPane1.getHighlighter().
+              addHighlight(wordToHighlight2.getPosition(), wordToHighlight2.getPosition() + wordToHighlight2.getLength(), new DefaultHighlightPainter(dtw.Substitution.getColor()));
+      
+    } catch (Exception ex) {
+      System.err.println(ex);
+    }
+  }
+  
+  public void searchAndHighlightErrors() {
+    if (STM.getInstance().isLoaded() && CTM.getInstance().isLoaded()) {
+      try {
+        controller.Error.getInstance().lookForErrors(STM.getInstance().getSectors(), CTM.getInstance().getSectors());
+        clearHighlighting();
+        String comboBoxValue = jComboBox2.getSelectedItem().toString();
+        int searchType = 0;
+        if (comboBoxValue.equals("All Errors")) {
+          searchType = 1;
+        } else if (comboBoxValue.equals("Deletion")) {
+          searchType = 2;
+        } else if (comboBoxValue.equals("Substitution")) {
+          searchType = 3;
+        } else if (comboBoxValue.equals("Insertion")) {
+          searchType = 4;
+        }
+        int numDel = 0;
+        int numSub = 0;
+        int numIns = 0;
+        
+        String tmpStr = "";
+        String tmpStr2 = "";
+        for (dtw.Error dtwErr : controller.Error.getInstance().getErrors()) {
+          if (dtwErr instanceof dtw.Insertion) {
+            numIns++;
+            if (searchType == 4) {
+              tmpStr += dtwErr.toString() + "\n";
+              highlightInsertion(dtwErr);
+            }
+          }
+          if (dtwErr instanceof dtw.Deletion) {
+            numDel++;
+            if (searchType == 2) {
+              tmpStr += dtwErr.toString() + "\n";
+              highlightDeletion(dtwErr);
+            }
+          }
+          if (dtwErr instanceof dtw.Substitution) {
+            numSub++;
+            if (searchType == 3) {
+              tmpStr += dtwErr.toString() + "\n";
+              highlightSubstitution(dtwErr);
+            }
+          }
+          if (searchType == 1) {
+            if (dtwErr instanceof dtw.Insertion) {
+              highlightInsertion(dtwErr);
+            } else if (dtwErr instanceof dtw.Deletion) {
+              highlightDeletion(dtwErr);
+            } else if (dtwErr instanceof dtw.Substitution) {
+              highlightSubstitution(dtwErr);
+            }
+            tmpStr += dtwErr.toString() + "\n";
+          }
+        }
+        tmpStr2 += "Error number = " + (numDel + numSub + numIns) + "\n";
+        tmpStr2 += "Deletion number = " + numDel + "\n";
+        tmpStr2 += "Insertion number = " + numIns + "\n";
+        tmpStr2 += "Substitution number = " + numSub + "\n";
+        jTextPane3.setText(tmpStr2 + tmpStr);
+      } catch (SizeLimitExceededException ex) {
+        System.err.println(ex);
+      }
+    }
+  }
+
+  /* End of error search highlighting area */
+
+  /* Navigation over errors.
+   * Direction = -1 if previous
+   * Direction = +1 if next
+   */
+  public void goToNextError(int direction) {
+    try {
+      controller.Error.getInstance().lookForErrors(STM.getInstance().getSectors(), CTM.getInstance().getSectors());
+      clearHighlighting();
+      String comboBoxValue = jComboBox2.getSelectedItem().toString();
+      int searchType = 0;
+      if (comboBoxValue.equals("All Errors")) {
+        searchType = 1;
+      } else if (comboBoxValue.equals("Deletion")) {
+        searchType = 2;
+      } else if (comboBoxValue.equals("Substitution")) {
+        searchType = 3;
+      } else if (comboBoxValue.equals("Insertion")) {
+        searchType = 4;
+      }
+      dtw.Error currentError = controller.Error.getInstance().getCurrentError();
+      jTextArea3.setText(currentError.getDetails());
+      Sector refSeg = STM.getInstance().getSectorByID(currentError.segId);
+      int segIndex = STM.getInstance().getSectors().indexOf(refSeg);
+      Sector hypSeg = CTM.getInstance().getSectors().get(segIndex);
+      errorHighlight(currentError.segId, refSeg.getStringSentence(), hypSeg.getStringSentence());
+      Sector tmpRefSeg = controller.STM.getInstance().getSectorByID(currentError.segId);
+      try {
+        jTextPane1.getHighlighter().addHighlight(tmpRefSeg.getPosition(), tmpRefSeg.getPosition() + tmpRefSeg.getLengthInChars(), new DefaultHighlightPainter(Color.RED));
+        jTextPane1.moveCaretPosition(tmpRefSeg.getPosition());
+      } catch (BadLocationException ex) {
+        System.err.println(ex);
+      }
+      switch (searchType) {
+        case 1: {
+          if (direction > 0) {
+            controller.Error.getInstance().goNextError();
+          } else {
+            controller.Error.getInstance().goPrevError();
+          }
+          break;
+        }
+        case 2: {
+          do {
+            if (direction > 0) {
+              controller.Error.getInstance().goNextError();
+            } else {
+              controller.Error.getInstance().goPrevError();
+            }
+          } while (!(controller.Error.getInstance().getCurrentError() instanceof dtw.Deletion));
+          break;
+        }
+        case 3: {
+          do {
+            if (direction > 0) {
+              controller.Error.getInstance().goNextError();
+            } else {
+              controller.Error.getInstance().goPrevError();
+            }
+          } while (!(controller.Error.getInstance().getCurrentError() instanceof dtw.Substitution));
+          break;
+        }
+        case 4: {
+          do {
+            if (direction > 0) {
+              controller.Error.getInstance().goNextError();
+            } else {
+              controller.Error.getInstance().goPrevError();
+            }
+          } while (!(controller.Error.getInstance().getCurrentError() instanceof dtw.Insertion));
+          break;
+        }
+      }
+    } catch (SizeLimitExceededException ex) {
+      System.err.println(ex);
+    }
+  }
+  /* End navigation over errors */
+
+  /* Sector: speaker list handlers */
+  public void highlightSectors(ArrayList<Sector> aSectorList) {
+    Iterator<Sector> it = aSectorList.iterator();
+    Sector s;
+    try {
+      boolean positionPlaced = false;
+      while (it.hasNext()) {
+        s = it.next();
+        jTextPane1.getHighlighter().addHighlight(s.getPosition(), s.getPosition() + s.getLengthInChars(), new DefaultHighlightPainter(Color.CYAN));
+        if (!positionPlaced) {
+          positionPlaced = true;
+          jTextPane1.setCaretPosition(s.getPosition());
+        }
+      }
+    } catch (Exception ex) {
+      System.err.println(ex);
+    }
+  }
+  
+  public void highlightTextSaidBySelectedSpeaker(String name) {
+    if (STM.getInstance().isLoaded() && CTM.getInstance().isLoaded()) {
+      highlightSectors(SpeakersUtilities.getSentencesForASpeaker(STM.getInstance().getSTMFile().getaSectorArray(), name));
+      highlightSectors(SpeakersUtilities.getSentencesForASpeaker(CTM.getInstance().getSectors(), name));
+    }
+  }
+  
+  private void speakersListMouseClicked(java.awt.event.MouseEvent evt) {
+    if (evt.getClickCount() == 2) {
+      clearHighlighting();
+      highlightTextSaidBySelectedSpeaker((String) jList1.getSelectedValue());
+    }
+  }
+  
+  private void speakersListKeyPressed(java.awt.event.KeyEvent evt) {
+    if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+      clearHighlighting();
+      highlightTextSaidBySelectedSpeaker((String) jList1.getSelectedValue());
+    }
+  }
+  
+  public void displaySpeakers() {
+    if (STM.getInstance().isLoaded()) {
+      jList1.setListData(SpeakersUtilities.getSpeakers(STM.getInstance().getSTMFile().getaSectorArray()));
+    }
+  }
+  /* End Sector: speaker list handlers */
 }

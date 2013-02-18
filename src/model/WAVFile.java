@@ -1,11 +1,14 @@
 package model;
 
+import audiorender.AudioWaveformCreator;
 import com.musicg.graphic.GraphicRender;
 import com.musicg.wave.Wave;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -74,16 +77,25 @@ public class WAVFile {
     sourceLine.close();
   }
 
-  public BufferedImage generateSonogramme() {
-    Wave wave = new Wave(filePath);
 
-    System.out.println("Le lengh du wav est : " + wave.length() + "secondes");
-    GraphicRender render = new GraphicRender();
-    BufferedImage image = render.renderWaveform(wave);
-    imageWidth = image.getWidth();
-    imageHeigh = image.getHeight();
-    
-    return image;
+  public BufferedImage generateSonogramme() throws UnsupportedAudioFileException, IOException, Exception {
+//    Wave wave = new Wave(filePath);
+//
+//    System.out.println("Le lengh du wav est : " + wave.length() + "secondes");
+//    GraphicRender render = new GraphicRender();
+//    BufferedImage image = render.renderWaveform(wave);
+//    imageWidth = image.getWidth();
+//    imageHeigh = image.getHeight();
+//    
+//    return image;
+      
+       AudioWaveformCreator awc;
+        
+       awc = new AudioWaveformCreator(filePath, "test.png");
+       BufferedImage image = awc.createAudioInputStream(10000, 350);
+         imageWidth = image.getWidth();
+         imageHeigh = image.getHeight();
+       return image;
    
   }
 
