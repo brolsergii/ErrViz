@@ -45,7 +45,7 @@ public class AudioWaveformCreator {
     this.waveformFilename = waveformFilename;
   }
 
-  public void createAudioInputStream(int w, int h) throws Exception {
+  public BufferedImage createAudioInputStream(int w, int h) throws Exception {
     if (file != null && file.isFile()) {
       try {
         errStr = null;
@@ -55,7 +55,8 @@ public class AudioWaveformCreator {
         duration = milliseconds / 1000.0;
         //System.out.println("Duration in seconds : "  +duration);
         samplingGraph = new SamplingGraph(w, h);
-        samplingGraph.createWaveForm(null);
+        BufferedImage image = samplingGraph.createWaveForm(null);
+        return image;
       } catch (Exception ex) {
         reportStatus(ex.toString());
         throw ex;
@@ -63,6 +64,7 @@ public class AudioWaveformCreator {
     } else {
       reportStatus("Audio file required.");
     }
+        return null;
   }
 
   /**
@@ -83,7 +85,7 @@ public class AudioWaveformCreator {
       this.h = h;
     }
 
-    public void createWaveForm(byte[] audioBytes) {
+    public BufferedImage createWaveForm(byte[] audioBytes) {
 
       lines.removeAllElements();  // clear the old vector
 
@@ -95,7 +97,7 @@ public class AudioWaveformCreator {
           audioInputStream.read(audioBytes);
         } catch (Exception ex) {
           reportStatus(ex.getMessage());
-          return;
+          return null;
         }
       }
       int[] audioData = null;
@@ -148,7 +150,9 @@ public class AudioWaveformCreator {
         lines.add(new Line2D.Double(x, y_last, x, y_new));
         y_last = y_new;
       }
-      saveToFile(waveformFilename);
+      //saveToFile(waveformFilename);
+      BufferedImage image = saveToBufferedImage();
+      return image;
     }
 
     public void saveToFile(String filename) {
@@ -169,7 +173,21 @@ public class AudioWaveformCreator {
       } catch (IOException e) {
       }
     }
+    
+    public BufferedImage saveToBufferedImage() {
+      int INFOPAD = 15;
 
+      BufferedImage bufferedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+      Graphics2D g2 = bufferedImage.createGraphics();
+
+      createSampleOnGraphicsContext(w, h, INFOPAD, g2);
+      // Cropping the image
+      bufferedImage = ImageCropping.getCroppedImage(bufferedImage);
+      g2.dispose();
+      return bufferedImage;
+    }
+    
+    
     private void createSampleOnGraphicsContext(int w, int h, int INFOPAD, Graphics2D g2) {
       g2.setBackground(imageBackgroundColor);
       g2.clearRect(0, 0, w, h);
@@ -379,7 +397,7 @@ public class AudioWaveformCreator {
     System.exit(1);
     }*/
     AudioWaveformCreator awc =
-            new AudioWaveformCreator("/home/darion/education/UdM/M2_Project/ErrViz/ressources/20040423_0000_1159_RFI_ELDA.wav", "/home/darion/test.png");
+            new AudioWaveformCreator("20031006_1155_1240_RFI_ELDA.wav", "test.png");
     awc.createAudioInputStream(10000, 350);
   }
 

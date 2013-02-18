@@ -1,6 +1,7 @@
 package controller;
 
 import audioplayer.WavePlayer;
+import java.awt.image.BufferedImage;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -69,7 +70,7 @@ public class WAV {
     currentTimeInSec = time;
     if (mainForm != null) {
       mainForm.setTimerLabel(getCurrentTimeInSec(), getOverralLength());
-      //mainForm.insertRedLineFromTime((int)time);
+      mainForm.insertRedLineFromTime((int)time);
     }
   }
 
@@ -100,7 +101,7 @@ public class WAV {
     wavFile.playSound();
   }
 
-  public String getSonogramme() {
+  public BufferedImage getSonogramme() throws UnsupportedAudioFileException, IOException, Exception {
     return wavFile.generateSonogramme();
   }
 
