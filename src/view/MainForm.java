@@ -1274,6 +1274,7 @@ public class MainForm extends javax.swing.JFrame {
     
 
     if(pos <= this.jPanel11.getWidth()/2 -10){
+        this.jLabel6.repaint();
         gr.draw(new Line2D.Double(pos, 0, pos, WAV.getInstance().getWavFile().getImageHeigh()));
         //WAV.getInstance().setCurrentTimeInSec(time);
     } else if(pos <= this.jLabel6.getWidth()-this.jPanel11.getWidth()/2 +20){
@@ -1288,7 +1289,6 @@ public class MainForm extends javax.swing.JFrame {
   }
 
   public void insertRedLineFromTime(int time) {
-    this.jLabel6.repaint();
     
 
     int pos = WAV.getInstance().getWavFile().getPositionByTime(time);
@@ -1300,8 +1300,9 @@ public class MainForm extends javax.swing.JFrame {
     gr.setPaint(Color.RED);
     //gr.drawLine(0, pos, WAV.getInstance().getWavFile().getImageHeigh(), pos);
     
-
+  
     if(pos <= this.jPanel11.getWidth()/2 -10){
+        this.jLabel6.repaint();
         gr.draw(new Line2D.Double(pos, 0, pos, WAV.getInstance().getWavFile().getImageHeigh()));
         //WAV.getInstance().setCurrentTimeInSec(time);
     } else if(pos <= this.jLabel6.getWidth()-this.jPanel11.getWidth()/2 +20){
