@@ -1,7 +1,6 @@
 package parserCTM;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import model.CTMFile;
@@ -35,6 +34,7 @@ public class ParserCTM implements Runnable {
       BufferedReader input = null;
       try {
         String stmName = file.getFileName().replaceAll("MAJ.ctm", "stm");
+        stmName = stmName.replaceAll(".ctm", ".stm");
         //System.out.println("stmName = " + stmName);
         input = new BufferedReader(new InputStreamReader(new FileInputStream(stmName.toString())));
         String tempEnco = input.readLine();
