@@ -78,6 +78,7 @@ public class WAVFile {
   }
 
 
+<<<<<<< HEAD
   public BufferedImage generateSonogramme() throws UnsupportedAudioFileException, IOException, Exception {
 //    Wave wave = new Wave(filePath);
 //
@@ -88,6 +89,10 @@ public class WAVFile {
 //    imageHeigh = image.getHeight();
 //    
 //    return image;
+=======
+
+  public BufferedImage generateSonogramme() throws UnsupportedAudioFileException, IOException, Exception {
+>>>>>>> master
       
        AudioWaveformCreator awc;
         
