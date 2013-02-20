@@ -55,7 +55,7 @@ public class MainForm extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
-        jLabel6 = new javax.swing.JLabel();
+        jLabel6 = new JAudioLabel(this);
         jLabel5 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
@@ -1265,56 +1265,34 @@ public class MainForm extends javax.swing.JFrame {
   }
   
   public void insertRedLine(int pos) {
-    
     int time = WAV.getInstance().getWavFile().getTimeCurrentPostion(pos);
-    //System.out.println("Le coordonnes x =" + pos + " pixél ****** Clicque au temps t = " + time + " s");
-    Graphics2D gr = (Graphics2D) this.jPanel11.getGraphics();
-    //gr.scale(1, (double) jPanel11.getHeight()/(double) WAV.getInstance().getWavFile().getImageHeigh());
+    Graphics2D gr = (Graphics2D) this.jLabel6.getGraphics();
     gr.setPaint(Color.RED);
-    
-
     if(pos <= this.jPanel11.getWidth()/2 -10){
-        this.jPanel11.repaint();
-        gr.draw(new Line2D.Double(pos, 0, pos, WAV.getInstance().getWavFile().getImageHeigh()));
-        //WAV.getInstance().setCurrentTimeInSec(time);
+        this.jLabel6.paint(gr);
     } else if(pos <= this.jLabel6.getWidth()-this.jPanel11.getWidth()/2 +20){
         this.updateScrolBars(pos-this.jPanel11.getWidth()/2 + 20);
-        this.jPanel11.repaint();
-        gr.draw(new Line2D.Double(this.jPanel11.getWidth()/2 -10, 0, this.jPanel11.getWidth()/2 -10, WAV.getInstance().getWavFile().getImageHeigh()));
-        //WAV.getInstance().setCurrentTimeInSec(time);
     } else{
-        this.updateScrolBars(pos-this.jPanel11.getWidth());
-        this.jPanel11.repaint();
-        gr.draw(new Line2D.Double(this.jPanel11.getWidth()-20, 0, this.jPanel11.getWidth()-20, WAV.getInstance().getWavFile().getImageHeigh()));
-        //WAV.getInstance().setCurrentTimeInSec(time);
+        //this.updateScrolBars(pos-this.jPanel11.getWidth());
+        this.jLabel6.paint(gr);
     }
   }
 
   public void insertRedLineFromTime(int time) {
     
     int pos = WAV.getInstance().getWavFile().getPositionByTime(time);
-    //System.out.println("Le coordonnes x =" + pos + " pixél ****** Clicque au temps t = " + time + " s");
     int posByPanel = (int)this.jScrollPane6.getViewport().getViewPosition().getX();
     
-    Graphics2D gr = (Graphics2D) this.jPanel11.getGraphics();
-    //gr.scale(1, (double) jPanel11.getHeight()/(double) WAV.getInstance().getWavFile().getImageHeigh());
+    Graphics2D gr = (Graphics2D) this.jLabel6.getGraphics();
     gr.setPaint(Color.RED);
-    //gr.drawLine(0, pos, WAV.getInstance().getWavFile().getImageHeigh(), pos);
     
     if(pos <= this.jPanel11.getWidth()/2 -10){
-        this.jPanel11.repaint();
-        gr.draw(new Line2D.Double(pos, 0, pos, WAV.getInstance().getWavFile().getImageHeigh()));
-        //WAV.getInstance().setCurrentTimeInSec(time);
+        this.jLabel6.paint(gr);
     } else if(pos <= this.jLabel6.getWidth()-this.jPanel11.getWidth()/2 +20){
         this.updateScrolBars(pos-this.jPanel11.getWidth()/2 + 20);
-        this.jPanel11.repaint();
-        gr.draw(new Line2D.Double(this.jPanel11.getWidth()/2 -10, 0, this.jPanel11.getWidth()/2 -10, WAV.getInstance().getWavFile().getImageHeigh()));
-        //WAV.getInstance().setCurrentTimeInSec(time);
     } else{
-        this.updateScrolBars(pos-this.jPanel11.getWidth());
-        this.jPanel11.repaint();
-        gr.draw(new Line2D.Double(this.jPanel11.getWidth()-20, 0, this.jPanel11.getWidth()-20, WAV.getInstance().getWavFile().getImageHeigh()));
-        //WAV.getInstance().setCurrentTimeInSec(time);
+        //this.updateScrolBars(pos-this.jPanel11.getWidth());
+        this.jLabel6.paint(gr);
     }
   
   }
