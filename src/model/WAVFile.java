@@ -34,7 +34,7 @@ public class WAVFile {
 
   public WAVFile(String filePath) {
     this.filePath = filePath;
-    String[] elements = filePath.split(File.separator);
+    String[] elements = filePath.split(File.pathSeparator);
     this.fileName = elements[elements.length - 1];
     soundFile = new File(filePath);
   }
