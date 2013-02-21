@@ -11,7 +11,7 @@ JAR files manifest file (MANIFEST.MF).
 To run the project from the command line, go to the dist folder and
 type the following:
 
-java -jar "ErrViz-0.3.0-working.jar" 
+java -jar "ErrViz-1.1.jar" 
 
 To distribute this project, zip up the dist folder (including the lib folder)
 and distribute the ZIP file.

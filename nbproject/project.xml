@@ -3,7 +3,7 @@
     <type>org.netbeans.modules.java.j2seproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
-            <name>ErrViz-0.3.0-working</name>
+            <name>ErrViz-1.1</name>
             <source-roots>
                 <root id="src.properties.dir"/>
                 <root id="src.dir"/>
